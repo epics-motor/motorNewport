@@ -5,6 +5,9 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
+# The following are used for debugging messages.
+#!USR_CXXFLAGS += -DDEBUG
+
 #=============================
 # Build the IOC application
 
@@ -16,10 +19,21 @@ DBD += newport.dbd
 newport_DBD += base.dbd
 
 # Include dbd files from all support applications:
-#newport_DBD += xxx.dbd
+#ifdef ASYN
+newport_DBD += asyn.dbd
+#endif
+newport_DBD += motorSupport.dbd
+newport_DBD += devNewport.dbd
 
 # Add all the support libraries needed by this IOC
-#newport_LIBS += xxx
+newport_LIBS += newport
+newport_LIBS += motor
+#ifdef ASYN
+newport_LIBS += asyn
+#endif
+#ifdef SNCSEQ
+newport_LIBS += seq pv
+#endif
 
 # newport_registerRecordDeviceDriver.cpp derives from newport.dbd
 newport_SRCS += newport_registerRecordDeviceDriver.cpp

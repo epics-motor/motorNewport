@@ -1,0 +1,4 @@
+MOTOR=
+-include $(MOTOR)/configure/RELEASE
+# path to motorNewport is needed to build the IOC inside motorNewport, but outside motor
+MOTOR_NEWPORT=

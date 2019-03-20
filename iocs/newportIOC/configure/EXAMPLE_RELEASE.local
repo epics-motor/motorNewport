@@ -1,0 +1,6 @@
+# Use the following lines if motorNewport was built inside motor
+MOTOR=
+-include $(MOTOR)/configure/RELEASE
+# Use the following lines if motorNewport was built outside motor
+#!MOTOR_NEWPORT=
+#!-include $(MOTOR_NEWPORT)/configure/RELEASE.local

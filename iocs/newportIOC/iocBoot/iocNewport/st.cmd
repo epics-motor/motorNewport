@@ -11,11 +11,13 @@ cd "${TOP}"
 dbLoadDatabase "dbd/newport.dbd"
 newport_registerRecordDeviceDriver pdbbase
 
-## Load record instances
-#dbLoadRecords("db/xxx.db","user=kpetersn")
+## motorUtil (allstop & alldone)
+dbLoadRecords("$(MOTOR)/db/motorUtil.db", "P=newport:")
 
 cd "${TOP}/iocBoot/${IOC}"
 iocInit
 
-## Start any sequence programs
-#seq sncxxx,"user=kpetersn"
+## motorUtil (allstop & alldone)
+motorUtilInit("newport:")
+
+# Boot complete
