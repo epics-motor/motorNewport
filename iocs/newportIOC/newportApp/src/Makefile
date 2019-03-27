@@ -21,12 +21,13 @@ newport_DBD += base.dbd
 # Include dbd files from all support applications:
 #ifdef ASYN
 newport_DBD += asyn.dbd
+newport_DBD += drvAsynSerialPort.dbd
 #endif
 newport_DBD += motorSupport.dbd
 newport_DBD += devNewport.dbd
 
 # Add all the support libraries needed by this IOC
-newport_LIBS += newport
+newport_LIBS += Newport
 newport_LIBS += motor
 #ifdef ASYN
 newport_LIBS += asyn

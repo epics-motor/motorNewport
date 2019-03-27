@@ -2,8 +2,8 @@
 < envPaths
 # Tell EPICS all about the record types, device-support modules, drivers,
 # etc. in this build from CARS
-dbLoadDatabase("../../dbd/WithAsyn.dbd")
-WithAsyn_registerRecordDeviceDriver(pdbbase)
+dbLoadDatabase("../../dbd/newport.dbd")
+newport_registerRecordDeviceDriver(pdbbase)
 
 ### Motors
 dbLoadTemplate "motor.substitutions.xps4"

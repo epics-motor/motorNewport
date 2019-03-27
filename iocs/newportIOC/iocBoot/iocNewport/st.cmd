@@ -1,23 +1,38 @@
 #!../../bin/linux-x86_64/newport
 
-## You may have to change newport to something else
-## everywhere it appears in this file
-
 < envPaths
 
-cd "${TOP}"
-
 ## Register all support components
-dbLoadDatabase "dbd/newport.dbd"
+dbLoadDatabase "../../dbd/newport.dbd"
 newport_registerRecordDeviceDriver pdbbase
 
 ## motorUtil (allstop & alldone)
 dbLoadRecords("$(MOTOR)/db/motorUtil.db", "P=newport:")
 
-cd "${TOP}/iocBoot/${IOC}"
+#
+#< motor.cmd.hxp
+
 iocInit
 
 ## motorUtil (allstop & alldone)
 motorUtilInit("newport:")
 
 # Boot complete
+
+#
+### Show some of the help messages
+#
+help AG_CONEXCreateController
+# 
+help AG_UCCreateController
+help AG_UCCreateAxis
+#
+help ESP300Config
+help ESP300Setup
+#
+help HXPCreateController
+#
+help SMC100CreateController
+#
+help XPSCreateController
+help XPSCreateAxis
