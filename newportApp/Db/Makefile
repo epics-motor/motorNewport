@@ -11,6 +11,22 @@ include $(TOP)/configure/CONFIG
 # Create and install (or just install) into <top>/db
 # databases, templates, substitutions like this
 #DB += xxx.db
+DB += HXP_coords.db
+DB += HXP_extra.db
+DB += profileMoveAxisXPS.template
+DB += profileMoveControllerXPS.template
+DB += profileMoveControllerXPS_settings.req
+DB += XPSAuxAi.db
+DB += XPSAuxAo.db
+DB += XPSAuxBi.db
+DB += XPSAuxBo.db
+DB += XPSAuxLi.db
+DB += XPSAuxLo.db
+DB += XPS_extra.db
+DB += XPSPositionCompare.db
+DB += XPSPositionCompare_settings.req
+DB += xpsSlave.db
+DB += XPSTclScript.template*
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

@@ -1,4 +1,4 @@
-file "$(MOTOR)/motorApp/Db/asyn_motor.db"
+file "$(TOP)/db/asyn_motor.db"
 {
   pattern
   {P,                M,  DTYP,        PORT,  ADDR,  DESC,  EGU,      DIR,  VMAX,  VELO,  VBAS,  ACCL,  BDST,     BVEL,  BACC,   MRES,   PREC,  DHLM,       DLLM,   INIT, RTRY}
@@ -11,7 +11,7 @@ file "$(MOTOR)/motorApp/Db/asyn_motor.db"
 }
 
 # Extra HXP controller support (moveAll, status and error PVs)
-file "$(MOTOR)/motorApp/Db/HXP_extra.db"
+file "$(TOP)/db/HXP_extra.db"
 {
   pattern
   {P,    R,       PORT, CHAN}
@@ -19,7 +19,7 @@ file "$(MOTOR)/motorApp/Db/HXP_extra.db"
 }
 
 # HXP coordinate-system support (reading and redefining)
-file "$(MOTOR)/motorApp/Db/HXP_coords.db"
+file "$(TOP)/db/HXP_coords.db"
 {
   pattern
   {P,    R,       PORT, CHAN, M1, M2, M3, M4, M5, M6}
