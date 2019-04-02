@@ -2,10 +2,11 @@ TOP=..
 
 include $(TOP)/configure/CONFIG
 
-TARGETS = $(CONFIG_TARGETS)
-CONFIGS += $(subst ../,,$(wildcard $(CONFIG_INSTALLS)))
+ifeq ($(INSTALL_CONFIG),$(MOTOR)/configure)
+# Don't overwrite Motor's configure files
+INSTALL_CONFIG =
+endif
 
-# Workaround to prevent overwriting motor's CONFIG_SITE
-INSTALL_CONFIG = 
+TARGETS = $(CONFIG_TARGETS)
 
 include $(TOP)/configure/RULES
