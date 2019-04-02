@@ -36,4 +36,9 @@ iocBoot_DEPEND_DIRS += $(filter %App,$(DIRS))
 $(foreach dir, $(filter %iocs, $(DIRS)), \
     $(eval $(dir)_DEPEND_DIRS += $(filter %Sup %App, $(DIRS))))
 
-include $(TOP)/configure/RULES_TOP
+# Only support top-level targets when submodule is built stand-alone
+ifeq ($(INSTALL_LOCATION),$(MOTOR))
+  include $(TOP)/configure/RULES_DIRS
+else
+  include $(TOP)/configure/RULES_TOP
+endif
