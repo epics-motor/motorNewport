@@ -10,7 +10,12 @@ newport_registerRecordDeviceDriver pdbbase
 dbLoadRecords("$(MOTOR)/db/motorUtil.db", "P=newport:")
 
 #
-#< motor.cmd.hxp
+#!< motor.cmd.hxp
+#!< ESP300.cmd 
+#!< MM3000.cmd
+#!< MM4000.cmd
+#!< MM4000Asyn.cmd
+#!< PM500.cmd
 
 iocInit
 
@@ -22,17 +27,17 @@ motorUtilInit("newport:")
 #
 ### Show some of the help messages
 #
-help AG_CONEXCreateController
+#!help AG_CONEXCreateController
 # 
-help AG_UCCreateController
-help AG_UCCreateAxis
+#!help AG_UCCreateController
+#!help AG_UCCreateAxis
 #
-help ESP300Config
-help ESP300Setup
+#!help ESP300Config
+#!help ESP300Setup
 #
-help HXPCreateController
+#!help HXPCreateController
 #
-help SMC100CreateController
+#!help SMC100CreateController
 #
-help XPSCreateController
-help XPSCreateAxis
+#!help XPSCreateController
+#!help XPSCreateAxis

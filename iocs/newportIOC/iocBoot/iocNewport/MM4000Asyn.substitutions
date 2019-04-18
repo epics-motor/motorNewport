@@ -1,0 +1,13 @@
+file "$(MOTOR)/db/asyn_motor.db"
+{
+pattern
+{P,         M,      DTYP,     PORT, ADDR,     DESC,    EGU, DIR,   VELO,  VBAS, ACCL, BDST, BVEL, BACC, MRES, PREC,   DHLM,   DLLM, INIT}
+{newport:, m11, "asynMotor",  "MM4",   0,  "motor 11", mm,  Pos,   1,     0,    0.2,  0,    1,    0.2,  1e-5, 5,     100,    -100,   ""} 
+{newport:, m12, "asynMotor",  "MM4",   1,  "motor 11", mm,  Pos,   1,     0,    0.2,  0,    1,    0.2,  1e-5, 5,     100,    -100,   ""} 
+{newport:, m13, "asynMotor",  "MM4",   2,  "motor 11", mm,  Pos,   1,     0,    0.2,  0,    1,    0.2,  1e-5, 5,     100,    -100,   ""} 
+{newport:, m14, "asynMotor",  "MM4",   3,  "motor 11", mm,  Pos,   1,     0,    0.2,  0,    1,    0.2,  1e-5, 5,     100,    -100,   ""} 
+{newport:, m15, "asynMotor",  "MM4",   4,  "motor 11", mm,  Pos,   1,     0,    0.2,  0,    1,    0.2,  1e-5, 5,     100,    -100,   ""} 
+{newport:, m16, "asynMotor",  "MM4",   5,  "motor 11", mm,  Pos,   1,     0,    0.2,  0,    1,    0.2,  1e-5, 5,     100,    -100,   ""} 
+{newport:, m17, "asynMotor",  "MM4",   6,  "motor 11", mm,  Pos,   1,     0,    0.2,  0,    1,    0.2,  1e-5, 5,     100,    -100,   ""} 
+{newport:, m18, "asynMotor",  "MM4",   7,  "motor 11", mm,  Pos,   1,     0,    0.2,  0,    1,    0.2,  1e-5, 5,     100,    -100,   ""} 
+}

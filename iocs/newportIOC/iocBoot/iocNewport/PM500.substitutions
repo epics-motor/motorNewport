@@ -1,0 +1,8 @@
+file "$(MOTOR)/db/motor.db"
+{
+pattern
+{P,         N,        M,     DTYP,    C,  S,  DESC,          EGU,      DIR,  VELO,  VBAS,  ACCL,  BDST,  BVEL,  BACC,  MRES,  PREC,  DHLM,  DLLM,  INIT}
+{newport:,  31,   "m$(N)",  "PM500",  0,  0,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    5e-5,  5,     100,   -100,  ""}
+{newport:,  32,   "m$(N)",  "PM500",  0,  1,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    5e-5,  5,     100,   -100,  ""}
+{newport:,  33,   "m$(N)",  "PM500",  0,  2,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    5e-5,  5,     100,   -100,  ""}
+}

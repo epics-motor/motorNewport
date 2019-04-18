@@ -1,0 +1,13 @@
+file "$(MOTOR)/db/motor.db"
+{
+pattern
+{P,         N,      M,        DTYP,    C,  S,  DESC,          EGU,      DIR,  VELO,  VBAS,  ACCL,  BDST,  BVEL,  BACC,  MRES,  PREC,  DHLM,  DLLM,  INIT}
+{newport:,  11,   "m$(N)",  "MM4000",  0,  0,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    1e-5,  5,     100,   -100,  ""}
+{newport:,  12,   "m$(N)",  "MM4000",  0,  1,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    1e-5,  5,     100,   -100,  ""}
+{newport:,  13,   "m$(N)",  "MM4000",  0,  2,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    1e-5,  5,     100,   -100,  ""}
+{newport:,  14,   "m$(N)",  "MM4000",  0,  3,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    1e-5,  5,     100,   -100,  ""}
+{newport:,  15,   "m$(N)",  "MM4000",  0,  4,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    1e-5,  5,     100,   -100,  ""}
+{newport:,  16,   "m$(N)",  "MM4000",  0,  5,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    1e-5,  5,     100,   -100,  ""}
+{newport:,  17,   "m$(N)",  "MM4000",  0,  6,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    1e-5,  5,     100,   -100,  ""}
+{newport:,  18,   "m$(N)",  "MM4000",  0,  7,  "motor $(N)",  mm,       Pos,  1,     .1,    .2,    0,     1,     .2,    1e-5,  5,     100,   -100,  ""}
+}
