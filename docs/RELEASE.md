@@ -1,6 +1,6 @@
 # motorNewport Releases
 
-## __R1-0 (2019-04-19)__
+## __R1-0 (2019-04-18)__
 R1-0 is a release based on the master branch.  
 
 ### Changes since motor-6-11
