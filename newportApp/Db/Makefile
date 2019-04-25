@@ -36,3 +36,7 @@ include $(TOP)/configure/RULES
 #----------------------------------------
 #  ADD RULES AFTER THIS LINE
 
+ifeq ($(BASE_3_14),YES)
+# Only needed for 3.14 build rules:
+vpath %.req $(USR_VPATH) $(GENERIC_SRC_DIRS)
+endif
