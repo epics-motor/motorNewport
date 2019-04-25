@@ -26,7 +26,7 @@ DB += XPS_extra.db
 DB += XPSPositionCompare.db
 DB += XPSPositionCompare_settings.req
 DB += xpsSlave.db
-DB += XPSTclScript.template*
+DB += XPSTclScript.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add
