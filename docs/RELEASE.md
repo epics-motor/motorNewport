@@ -1,5 +1,16 @@
 # motorNewport Releases
 
+## __R1-0-1 (2019-08-08)__
+R1-0-1 is a release based on the master branch.
+
+### Changes since R1-0
+
+#### Modifications to existing features
+* Commit [cdd60e5](https://github.com/epics-motor/motorNewport/commit/cdd60e596f2e2855af6fd76c4320e7ed6102542f): Added build rule to allow *.req files to be installed when building against base 3.14
+
+#### Bug fixes
+* Commit [c9beba9](https://github.com/epics-motor/motorNewport/commit/c9beba9bbca2b55f4a068a445603fb3a9bf05660): Corrected a typo that prevented XPSTclScript.template from being installed
+
 ## __R1-0 (2019-04-18)__
 R1-0 is a release based on the master branch.  
 
