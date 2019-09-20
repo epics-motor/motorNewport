@@ -142,7 +142,7 @@ volatile int drvMM4000ReadbackDelay = 0;
 
 /*----------------functions-----------------*/
 static int recv_mess(int, char *, int);
-static RTN_STATUS send_mess(int, char const *, char *name);
+static RTN_STATUS send_mess(int, const char *, const char *name);
 static void start_status(int card);
 static int set_status(int card, int signal);
 static long report(int level);
@@ -259,14 +259,14 @@ static void start_status(int card)
     if (card >= 0)
     {
         cntrl = (struct MMcontroller *) motor_state[card]->DevicePrivate;
-        send_mess(card, READ_STATUS, (char*) NULL);
+        send_mess(card, READ_STATUS, NULL);
         status = recv_mess(card, cntrl->status_string, 1);
         if (status > 0)
         {
             cntrl->status = NORMAL;
-            send_mess(card, READ_POSITION, (char*) NULL);
+            send_mess(card, READ_POSITION, NULL);
             recv_mess(card, cntrl->position_string, 1);
-            send_mess(card, READ_FEEDBACK, (char*) NULL);
+            send_mess(card, READ_FEEDBACK,  NULL);
             recv_mess(card, cntrl->feedback_string, 1);
         }
         else
@@ -284,7 +284,7 @@ static void start_status(int card)
          * responses.  This minimizes the latency due to processing on each card
          */
         for (itera = 0; (itera < total_cards) && motor_state[itera]; itera++)
-            send_mess(itera, READ_STATUS, (char*) NULL);
+            send_mess(itera, READ_STATUS, NULL);
         for (itera = 0; (itera < total_cards) && motor_state[itera]; itera++)
         {
             cntrl = (struct MMcontroller *) motor_state[itera]->DevicePrivate;
@@ -292,7 +292,7 @@ static void start_status(int card)
             if (status > 0)
             {
                 cntrl->status = NORMAL;
-                send_mess(itera, READ_FEEDBACK, (char*) NULL);
+                send_mess(itera, READ_FEEDBACK, NULL);
                 recv_mess(itera, cntrl->feedback_string, 1);
             }
             else
@@ -304,7 +304,7 @@ static void start_status(int card)
             }
         }
         for (itera = 0; (itera < total_cards) && motor_state[itera]; itera++)
-            send_mess(itera, READ_POSITION, (char*) NULL);
+            send_mess(itera, READ_POSITION, NULL);
         for (itera = 0; (itera < total_cards) && motor_state[itera]; itera++)
         {
             cntrl = (struct MMcontroller *) motor_state[itera]->DevicePrivate;
@@ -388,7 +388,7 @@ static int set_status(int card, int signal)
         if (motor_info->pid_present == YES && drvMM4000ReadbackDelay != 0)
         {
             epicsThreadSleep((double) drvMM4000ReadbackDelay/1000.0);
-            send_mess(card, READ_STATUS, (char*) NULL);
+            send_mess(card, READ_STATUS, NULL);
             recv_mess(card, cntrl->status_string, 1);
             pos = signal*5 + 3;  /* Offset in status string */
             mstat.All = cntrl->status_string[pos];
@@ -496,7 +496,7 @@ static int set_status(int card, int signal)
         nodeptr->postmsgptr != 0)
     {
         strcpy(buff, nodeptr->postmsgptr);
-        send_mess(card, buff, (char*) NULL);
+        send_mess(card, buff, NULL);
         nodeptr->postmsgptr = NULL;
     }
 
@@ -510,7 +510,7 @@ exit:
 /* send a message to the MM4000 board            */
 /* send_mess()                               */
 /*****************************************************/
-static RTN_STATUS send_mess(int card, char const *com, char *name)
+static RTN_STATUS send_mess(int card, const char *com, const char *name)
 {
     struct MMcontroller *cntrl;
     size_t size;
