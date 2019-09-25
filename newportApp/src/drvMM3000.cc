@@ -123,7 +123,7 @@ int MM3000_num_cards = 0;
 
 /*----------------functions-----------------*/
 STATIC int recv_mess(int, char *, int);
-STATIC RTN_STATUS send_mess(int, char const *, char *);
+STATIC RTN_STATUS send_mess(int, const char *, const char *);
 STATIC int set_status(int, int);
 static long report(int);
 static long init();
@@ -245,7 +245,7 @@ STATIC int set_status(int card, int signal)
     status.All = motor_info->status.All;
 
     sprintf(outbuff, "%dMS", signal + 1);
-    send_mess(card, outbuff, (char*) NULL);
+    send_mess(card, outbuff, NULL);
     charcnt = recv_mess(card, inbuff, 1);
     if (charcnt > 0)
     {
@@ -310,7 +310,7 @@ STATIC int set_status(int card, int signal)
     status.Bits.EA_HOME     = 0;
 
     sprintf(outbuff, "%dTP", signal + 1);
-    send_mess(card, outbuff, (char*) NULL);
+    send_mess(card, outbuff, NULL);
     charcnt = recv_mess(card, inbuff, 1);
     if (charcnt > 0)
     {
@@ -373,7 +373,7 @@ STATIC int set_status(int card, int signal)
         nodeptr->postmsgptr != 0)
     {
         strcpy(outbuff, nodeptr->postmsgptr);
-        send_mess(card, outbuff, (char*) NULL);
+        send_mess(card, outbuff, NULL);
         nodeptr->postmsgptr = NULL;
     }
 
@@ -387,7 +387,7 @@ exit:
 /* send a message to the MM3000 board            */
 /* send_mess()                               */
 /*****************************************************/
-STATIC RTN_STATUS send_mess(int card, char const *com, char *name)
+STATIC RTN_STATUS send_mess(int card, const char *com, const char *name)
 {
     struct MMcontroller *cntrl;
     size_t size;
