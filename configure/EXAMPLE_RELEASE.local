@@ -1,4 +1,4 @@
 MOTOR=
--include $(MOTOR)/configure/RELEASE
+-include $(MOTOR)/modules/RELEASE.$(EPICS_HOST_ARCH).local
 # path to motorNewport is needed to build the IOC inside motorNewport, but outside motor
 MOTOR_NEWPORT=
