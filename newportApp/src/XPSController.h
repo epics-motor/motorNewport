@@ -16,8 +16,9 @@ USAGE...        Newport XPS EPICS asyn motor device driver
 #define XPS_MIN_PROFILE_ACCEL_TIME 0.25
 
 /* Constants used for FTP to the XPS */
-#define XPS_C8_TRAJECTORY_DIRECTORY "/Admin/Public/Trajectories"
-#define XPS_Q8_TRAJECTORY_DIRECTORY "/Public/Trajectories"
+#define XPS_C_TRAJECTORY_DIRECTORY "/Admin/Public/Trajectories"
+#define XPS_Q_TRAJECTORY_DIRECTORY "/Public/Trajectories"
+#define XPS_D_TRAJECTORY_DIRECTORY "/Admin/Public/Trajectories"
 #define MAX_FILENAME_LEN  256
 #define MAX_MESSAGE_LEN   256
 #define MAX_GROUPNAME_LEN  64
@@ -125,6 +126,7 @@ class epicsShareClass XPSController : public asynMotorController {
   int IPPort_;
   char *ftpUsername_;
   char *ftpPassword_;
+  bool useSFTP_;
   int pollSocket_;
   int moveSocket_;
   char firmwareVersion_[100];
