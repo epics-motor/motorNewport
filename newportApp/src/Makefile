@@ -50,6 +50,7 @@ Newport_SRCS += asynOctetSocket.cpp
 Newport_SRCS += XPS_C8_drivers.cpp 
 Newport_SRCS += drvXPSAsynAux.c
 Newport_SRCS += xps_ftp.c
+Newport_SRCS += xps_sftp.c
 # This is the model 2 asyn driver
 Newport_SRCS += drvXPSAsyn.c XPSAsynInterpose.c
 # This is the model 3 asyn driver
@@ -87,13 +88,13 @@ ifdef SNCSEQ
 XPSGatheringMain_LIBS += seq pv
 endif
 XPSGatheringMain_LIBS += $(EPICS_BASE_IOC_LIBS)
-XPSGatheringMain_SYS_LIBS_solaris += socket nsl
+XPSGatheringMain_SYS_LIBS_Linux += ssh2
 
 PROD_IOC += XPSGathering2
 XPSGathering2_SRCS += XPSGathering2.c
 XPSGathering2_LIBS += Newport motor asyn
 XPSGathering2_LIBS += $(EPICS_BASE_IOC_LIBS)
-XPSGathering2_SYS_LIBS_solaris += socket nsl
+XPSGathering2_SYS_LIBS_Linux += ssh2
 
 include $(TOP)/configure/RULES
 
