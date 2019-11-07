@@ -94,6 +94,7 @@ Versions: Release 4-5 and higher.
 #include "XPSController.h"
 #include "XPS_C8_drivers.h"
 #include "xps_ftp.h"
+#include "xps_sftp.h"
 #include "XPSAxis.h"
 
 static const char *driverName = "XPSController";
@@ -145,7 +146,7 @@ XPSController::XPSController(const char *portName, const char *IPAddress, int IP
                          0, 0),  // Default priority and stack size
      enableSetPosition_((enableSetPosition!=0)?true:false), 
      setPositionSettlingTime_(setPositionSettlingTime), 
-     ftpUsername_(NULL), ftpPassword_(NULL)
+     ftpUsername_(NULL), ftpPassword_(NULL), useSFTP_(false)
 {
   static const char *functionName = "XPSController";
   
@@ -234,6 +235,7 @@ void XPSController::report(FILE *fp, int level)
     fprintf(fp, "                  IPPort: %d\n", IPPort_);
     fprintf(fp, "             ftpUserName: %s\n", ftpUsername_);
     fprintf(fp, "         ftpUserPassword: %s\n", ftpPassword_);
+    fprintf(fp, "                 useSFTP: %s\n", useSFTP_ ? "true" : "false");
     fprintf(fp, "           movesDeferred: %d\n", movesDeferred_);
     fprintf(fp, "              autoEnable: %d\n", autoEnable_);
     fprintf(fp, "          noDisableError: %d\n", noDisableError_);
@@ -540,6 +542,7 @@ asynStatus XPSController::buildProfile()
   double trajVel;
   double D0, D1, T0, T1;
   SOCKET ftpSocket;
+  LIBSSH2_SESSION *sslSession;
   char fileName[MAX_FILENAME_LEN];
   char groupName[MAX_GROUPNAME_LEN];
   char message[MAX_MESSAGE_LEN];
@@ -691,35 +694,56 @@ asynStatus XPSController::buildProfile()
   fprintf(trajFile,"\n");
   fclose (trajFile);
   
+  if (strstr(firmwareVersion_, "XPS-C")) {
+    trajectoryDirectory = XPS_C_TRAJECTORY_DIRECTORY;
+  } else if (strstr(firmwareVersion_, "XPS-Q")) {
+    trajectoryDirectory = XPS_Q_TRAJECTORY_DIRECTORY;
+  } else if (strstr(firmwareVersion_, "XPS-D")) {
+    trajectoryDirectory = XPS_D_TRAJECTORY_DIRECTORY;
+    useSFTP_ = true;
+  } else {
+    buildOK = false;
+    sprintf(message, "Firmware version does not contain XPS-C, XPS-Q, or XPS-D=%s\n", firmwareVersion_);
+    goto done;
+  }
+
   /* FTP the trajectory file from the local directory to the XPS */
-  status = ftpConnect(IPAddress_, ftpUsername_, ftpPassword_, &ftpSocket);
+  if (useSFTP_) {
+    status = sftpConnect(IPAddress_, ftpUsername_, ftpPassword_, &ftpSocket, &sslSession);
+  } else {
+    status = ftpConnect(IPAddress_, ftpUsername_, ftpPassword_, &ftpSocket);
+  }
   if (status) {
     buildOK = false;
     sprintf(message, "Error calling ftpConnect, status=%d\n", status);
     goto done;
   }
-  if (strstr(firmwareVersion_, "C8")) {
-    trajectoryDirectory = XPS_C8_TRAJECTORY_DIRECTORY;
-  } else if (strstr(firmwareVersion_, "Q8")) {
-    trajectoryDirectory = XPS_Q8_TRAJECTORY_DIRECTORY;
+  if (useSFTP_) {
+    // Nothing to do, we use the path sftpStoreFile
   } else {
-    buildOK = false;
-    sprintf(message, "Firmware version does not contain C8 or Q8=%s\n", firmwareVersion_);
-    goto done;
+    status = ftpChangeDir(ftpSocket, trajectoryDirectory);
   }
-  status = ftpChangeDir(ftpSocket, trajectoryDirectory);
   if (status) {
     buildOK = false;
     sprintf(message, "Error calling  ftpChangeDir, status=%d\n", status);
     goto done;
   }
-  status = ftpStoreFile(ftpSocket, fileName);
+  if (useSFTP_) {
+    std::string remoteFile = std::string(trajectoryDirectory) + "/" + std::string(fileName);
+    status = sftpStoreFile(ftpSocket, sslSession, fileName, (char *)remoteFile.c_str());
+  } else {
+    status = ftpStoreFile(ftpSocket, fileName);
+  }
   if (status) {
     buildOK = false;
     sprintf(message, "Error calling  ftpStoreFile, status=%d\n", status);
     goto done;
   }
-  status = ftpDisconnect(ftpSocket);
+  if (useSFTP_) {
+    status = sftpDisconnect(ftpSocket, sslSession);
+  } else {
+    status = ftpDisconnect(ftpSocket);
+  }
   if (status) {
     buildOK = false;
     sprintf(message, "Error calling  ftpDisconnect, status=%d\n", status);
