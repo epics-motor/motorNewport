@@ -94,7 +94,7 @@ Versions: Release 4-5 and higher.
 #include "XPSController.h"
 #include "XPS_C8_drivers.h"
 #include "xps_ftp.h"
-#include "xps_sftp.h"
+#include "xpsCurlUpload.h"
 #include "XPSAxis.h"
 
 static const char *driverName = "XPSController";
@@ -542,7 +542,6 @@ asynStatus XPSController::buildProfile()
   double trajVel;
   double D0, D1, T0, T1;
   SOCKET ftpSocket;
-  LIBSSH2_SESSION *sslSession;
   char fileName[MAX_FILENAME_LEN];
   char groupName[MAX_GROUPNAME_LEN];
   char message[MAX_MESSAGE_LEN];
@@ -708,46 +707,35 @@ asynStatus XPSController::buildProfile()
   }
 
   /* FTP the trajectory file from the local directory to the XPS */
-  if (useSFTP_) {
-    status = sftpConnect(IPAddress_, ftpUsername_, ftpPassword_, &ftpSocket, &sslSession);
-  } else {
+  if (useSFTP_) { // SFTP with libcurl
+    status = xpsCurlUpload(IPAddress_, trajectoryDirectory, fileName, ftpUsername_, ftpPassword_);
+    if (status) goto done;
+
+  } else {  // FTP
     status = ftpConnect(IPAddress_, ftpUsername_, ftpPassword_, &ftpSocket);
-  }
-  if (status) {
-    buildOK = false;
-    sprintf(message, "Error calling ftpConnect, status=%d\n", status);
-    goto done;
-  }
-  if (useSFTP_) {
-    // Nothing to do, we use the path sftpStoreFile
-  } else {
+    if (status) {
+      buildOK = false;
+      sprintf(message, "Error calling ftpConnect, status=%d\n", status);
+      goto done;
+    }
     status = ftpChangeDir(ftpSocket, trajectoryDirectory);
-  }
-  if (status) {
-    buildOK = false;
-    sprintf(message, "Error calling  ftpChangeDir, status=%d\n", status);
-    goto done;
-  }
-  if (useSFTP_) {
-    std::string remoteFile = std::string(trajectoryDirectory) + "/" + std::string(fileName);
-    status = sftpStoreFile(ftpSocket, sslSession, fileName, (char *)remoteFile.c_str());
-  } else {
+    if (status) {
+      buildOK = false;
+      sprintf(message, "Error calling  ftpChangeDir, status=%d\n", status);
+      goto done;
+    }
     status = ftpStoreFile(ftpSocket, fileName);
-  }
-  if (status) {
-    buildOK = false;
-    sprintf(message, "Error calling  ftpStoreFile, status=%d\n", status);
-    goto done;
-  }
-  if (useSFTP_) {
-    status = sftpDisconnect(ftpSocket, sslSession);
-  } else {
+    if (status) {
+      buildOK = false;
+      sprintf(message, "Error calling  ftpStoreFile, status=%d\n", status);
+      goto done;
+    }
     status = ftpDisconnect(ftpSocket);
-  }
-  if (status) {
-    buildOK = false;
-    sprintf(message, "Error calling  ftpDisconnect, status=%d\n", status);
-    goto done;
+    if (status) {
+      buildOK = false;
+      sprintf(message, "Error calling  ftpDisconnect, status=%d\n", status);
+      goto done;
+    }
   }
 
   /* Verify trajectory */
