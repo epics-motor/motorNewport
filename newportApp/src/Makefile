@@ -12,6 +12,12 @@ USR_CPPFLAGS_Linux += -Wno-write-strings
 
 ifeq ("$(HAVE_LIBCURL)", "YES")
   USR_CXXFLAGS += -DHAVE_LIBCURL
+  PROD_SYS_LIBS += curl
+endif
+
+ifeq ("$(HAVE_LIBSSH2)", "YES")
+  USR_CXXFLAGS += -DHAVE_LIBSSH2
+  PROD_SYS_LIBS += ssh2
 endif
 
 # Install the XPS header file in case applications in another module need to use it
@@ -54,7 +60,7 @@ Newport_SRCS += asynOctetSocket.cpp
 Newport_SRCS += XPS_C8_drivers.cpp 
 Newport_SRCS += drvXPSAsynAux.c
 Newport_SRCS += xps_ftp.c
-Newport_SRCS += xpsCurlUpload.c
+Newport_SRCS += xpsSFTPUpload.c
 # This is the model 2 asyn driver
 Newport_SRCS += drvXPSAsyn.c XPSAsynInterpose.c
 # This is the model 3 asyn driver
@@ -92,18 +98,15 @@ ifdef SNCSEQ
 XPSGatheringMain_LIBS += seq pv
 endif
 XPSGatheringMain_LIBS += $(EPICS_BASE_IOC_LIBS)
-#XPSGatheringMain_SYS_LIBS_Linux += curl
 
 PROD_IOC += XPSGathering2
 XPSGathering2_SRCS += XPSGathering2.c
 XPSGathering2_LIBS += Newport motor asyn
 XPSGathering2_LIBS += $(EPICS_BASE_IOC_LIBS)
-#XPSGathering2_SYS_LIBS_Linux += curl
 
 PROD_IOC += testSFTPUpload
 testSFTPUpload_SRCS += testSFTPUpload.cpp
 testSFTPUpload_LIBS += Newport asyn $(EPICS_BASE_IOC_LIBS)
-#testSFTPUpload_SYS_LIBS_Linux += curl
 
 include $(TOP)/configure/RULES
 
