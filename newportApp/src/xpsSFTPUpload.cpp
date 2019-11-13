@@ -3,14 +3,14 @@
 #include <stdlib.h>
 #include <string>
 
-#include <xpsCurlUpload.h>
+#include <xpsSFTPUpload.h>
 
 // The following version requires libcurl.
 #ifdef HAVE_LIBCURL
 #include <sys/stat.h>
 #include <curl/curl.h>
 
-int xpsCurlUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
+int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
                   std::string userName, std::string password, bool verbose) {
   int status = 0;
   CURL *curl = curl_easy_init();
@@ -41,7 +41,7 @@ int xpsCurlUpload(std::string IPAddress, std::string trajectoryDirectory, std::s
 }
 #else
 // If HAVE_LIBCURL is not YES then try to execute the curl system command
-int xpsCurlUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
+int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
                   std::string userName, std::string password, bool verbose) {
   std::string verboseOption = verbose ? " --verbose " : " --silent ";
   std::string command = "curl -k -u " + userName + ":" + password + " -T " + fileName + verboseOption + " scp://" + IPAddress + trajectoryDirectory + "/";
