@@ -35,12 +35,13 @@ CHECK_RELEASE = YES
 #HOST_OPT = NO
 #CROSS_OPT = NO
 
-# Set the following to YES if you have libcurl.  
+# Set one of the following to YES if you have libcurl or libssh2
 # This is used for uploading trajectory files to the Newport XPS-D.
 # If it is not YES then the driver will attempt to run the "curl" system command,
-# rather than using libcurl.
+# rather than using libcurl or libssh2.
 ifeq (Linux, $(OS_CLASS))
 #  HAVE_LIBCURL=YES
+#  HAVE_LIBSSH2=YES
 endif
 
 # These allow developers to override the CONFIG_SITE variable
