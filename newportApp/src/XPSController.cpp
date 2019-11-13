@@ -708,8 +708,16 @@ asynStatus XPSController::buildProfile()
 
   /* FTP the trajectory file from the local directory to the XPS */
   if (useSFTP_) { // SFTP with libcurl
-    status = xpsCurlUpload(IPAddress_, trajectoryDirectory, fileName, ftpUsername_, ftpPassword_);
-    if (status) goto done;
+    int traceMask = pasynTrace->getTraceMask(pasynUserSelf);
+    bool curlVerbose = (traceMask & ASYN_TRACEIO_DRIVER) ? true : false;
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s calling xpsCurlUpload\n", driverName, functionName);
+    status = xpsCurlUpload(IPAddress_, trajectoryDirectory, fileName, ftpUsername_, ftpPassword_, curlVerbose);
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s xpsCurlUpload returned %d\n", driverName, functionName, status);
+    if (status) {
+      buildOK = false;
+      sprintf(message, "Error calling xpsCurlUpload, status=%d\n", status);
+      goto done;
+    }
 
   } else {  // FTP
     status = ftpConnect(IPAddress_, ftpUsername_, ftpPassword_, &ftpSocket);
