@@ -2,13 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include <sys/stat.h>
-#include <curl/curl.h>
 
 #include <xpsCurlUpload.h>
 
+// The following version requires libcurl.
+#ifdef HAVE_LIBCURL
+#include <sys/stat.h>
+#include <curl/curl.h>
+
 int xpsCurlUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
-                  std::string userName, std::string password) {
+                  std::string userName, std::string password, bool verbose) {
   int status = 0;
   CURL *curl = curl_easy_init();
   if (curl == 0) {
@@ -17,6 +20,7 @@ int xpsCurlUpload(std::string IPAddress, std::string trajectoryDirectory, std::s
   }
   std::string url = "scp://" + IPAddress + "/" + trajectoryDirectory + "/" + fileName;
   status |= curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+  status |= curl_easy_setopt(curl, CURLOPT_SSH_AUTH_TYPES, CURLSSH_AUTH_PASSWORD);
   std::string auth = userName + ":" + password;
   status |= curl_easy_setopt(curl, CURLOPT_USERPWD, auth.c_str());
   status |= curl_easy_setopt(curl, CURLOPT_UPLOAD, 1);
@@ -25,7 +29,7 @@ int xpsCurlUpload(std::string IPAddress, std::string trajectoryDirectory, std::s
   fstat(fileno(fd), &fileStat);
   status |= curl_easy_setopt(curl, CURLOPT_INFILESIZE, (long)fileStat.st_size);
   status |= curl_easy_setopt(curl, CURLOPT_READDATA, fd);
-//  status = curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+  if (verbose) status |= curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
   status |= curl_easy_perform(curl);
   fclose(fd);
   curl_easy_cleanup(curl);
@@ -35,3 +39,15 @@ int xpsCurlUpload(std::string IPAddress, std::string trajectoryDirectory, std::s
   }
   return 0;
 }
+#else
+// If HAVE_LIBCURL is not YES then try to execute the curl system command
+int xpsCurlUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
+                  std::string userName, std::string password, bool verbose) {
+  std::string verboseOption = verbose ? " --verbose " : " --silent ";
+  std::string command = "curl -k -u " + userName + ":" + password + " -T " + fileName + verboseOption + " scp://" + IPAddress + trajectoryDirectory + "/";
+  if (verbose) printf("curl command=%s\n", command.c_str());
+  int status = system(command.c_str());
+  return status;
+}
+
+#endif
