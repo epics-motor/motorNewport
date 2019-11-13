@@ -666,7 +666,18 @@ asynStatus XPSAxis::poll(bool *moving)
     setIntegerParam(pC_->motorStatusFollowingError_, 0);
   }
 
-  /*Test for states that mean we cannot move an axis (disabled, uninitialised, etc.) 
+  /* Set the PowerOn signal */
+  if (((axisStatus_ >=10) && (axisStatus_ <= 19)) ||
+      ((axisStatus_ >=43) && (axisStatus_ <= 49)) ||
+      (axisStatus_ == 56) || (axisStatus_ == 64) ||
+      (axisStatus_ == 68) || (axisStatus_ == 70) ||
+      (axisStatus_ == 77) || (axisStatus_ == 79)) { 
+    setIntegerParam(pC_->motorStatusPowerOn_, 1);             
+  } else {
+    setIntegerParam(pC_->motorStatusPowerOn_, 0);
+  }
+
+  /* Test for states that mean we cannot move an axis (disabled, uninitialised, etc.) 
     and set problem bit in MSTA.*/
   if ((axisStatus_ < 10) || ((axisStatus_ >= 20) && (axisStatus_ <= 42)) ||
       (axisStatus_ == 50) || (axisStatus_ == 64)) {
