@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <asynDriver.h>
-#include <xpsCurlUpload.h>
+#include <xpsSFTPUpload.h>
 
 int main(int argc, char *argv[])
 {
-  bool curlVerbose = true;
+  bool sftpVerbose = true;
   asynUser *pasynUser = pasynManager->createAsynUser(0, 0);
-  asynPrint(pasynUser, ASYN_TRACE_ERROR, "Calling xpsCurlUpload\n");
-  int status = xpsCurlUpload("newport-xps16", "/Admin/Public/Trajectories", "TrajectoryScan.trj", 
-                             "Administrator", "Administrator", curlVerbose);
-  asynPrint(pasynUser, ASYN_TRACE_ERROR, "xpsCurlUpload returned status=%d\n", status);
+  asynPrint(pasynUser, ASYN_TRACE_ERROR, "Calling xpsSFTPUpload\n");
+  int status = xpsSFTPUpload("164.54.160.71", "/Admin/Public/Trajectories", "TrajectoryScan.trj", 
+                             "Administrator", "Administrator", sftpVerbose);
+  asynPrint(pasynUser, ASYN_TRACE_ERROR, "xpsSFTPUpload returned status=%d\n", status);
   return 0;
 }
