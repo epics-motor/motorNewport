@@ -100,10 +100,10 @@ XPSGathering2_LIBS += Newport motor asyn
 XPSGathering2_LIBS += $(EPICS_BASE_IOC_LIBS)
 #XPSGathering2_SYS_LIBS_Linux += curl
 
-PROD_IOC += testCurlUpload
-testCurlUpload_SRCS += testCurlUpload.cpp
-testCurlUpload_LIBS += Newport asyn $(EPICS_BASE_IOC_LIBS)
-#testCurlUpload_SYS_LIBS_Linux += curl
+PROD_IOC += testSFTPUpload
+testSFTPUpload_SRCS += testSFTPUpload.cpp
+testSFTPUpload_LIBS += Newport asyn $(EPICS_BASE_IOC_LIBS)
+#testSFTPUpload_SYS_LIBS_Linux += curl
 
 include $(TOP)/configure/RULES
 
