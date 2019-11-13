@@ -94,7 +94,7 @@ Versions: Release 4-5 and higher.
 #include "XPSController.h"
 #include "XPS_C8_drivers.h"
 #include "xps_ftp.h"
-#include "xpsCurlUpload.h"
+#include "xpsSFTPUpload.h"
 #include "XPSAxis.h"
 
 static const char *driverName = "XPSController";
@@ -707,15 +707,15 @@ asynStatus XPSController::buildProfile()
   }
 
   /* FTP the trajectory file from the local directory to the XPS */
-  if (useSFTP_) { // SFTP with libcurl
+  if (useSFTP_) { // SFTP file
     int traceMask = pasynTrace->getTraceMask(pasynUserSelf);
-    bool curlVerbose = (traceMask & ASYN_TRACEIO_DRIVER) ? true : false;
-    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s calling xpsCurlUpload\n", driverName, functionName);
-    status = xpsCurlUpload(IPAddress_, trajectoryDirectory, fileName, ftpUsername_, ftpPassword_, curlVerbose);
-    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s xpsCurlUpload returned %d\n", driverName, functionName, status);
+    bool sftpVerbose = (traceMask & ASYN_TRACEIO_DRIVER) ? true : false;
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s calling xpsSFTPUpload\n", driverName, functionName);
+    status = xpsSFTPUpload(IPAddress_, trajectoryDirectory, fileName, ftpUsername_, ftpPassword_, sftpVerbose);
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s xpsSFTPUpload returned %d\n", driverName, functionName, status);
     if (status) {
       buildOK = false;
-      sprintf(message, "Error calling xpsCurlUpload, status=%d\n", status);
+      sprintf(message, "Error calling xpsSFTPUpload, status=%d\n", status);
       goto done;
     }
 
