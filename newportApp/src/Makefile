@@ -10,6 +10,10 @@ include $(TOP)/configure/CONFIG
 # Turn off warnings when we call this functions with string constants
 USR_CPPFLAGS_Linux += -Wno-write-strings
 
+ifeq ("$(HAVE_LIBCURL)", "YES")
+  USR_CXXFLAGS += -DHAVE_LIBCURL
+endif
+
 # Install the XPS header file in case applications in another module need to use it
 INC += XPS_C8_drivers.h
 
@@ -88,13 +92,18 @@ ifdef SNCSEQ
 XPSGatheringMain_LIBS += seq pv
 endif
 XPSGatheringMain_LIBS += $(EPICS_BASE_IOC_LIBS)
-XPSGatheringMain_SYS_LIBS_Linux += curl
+#XPSGatheringMain_SYS_LIBS_Linux += curl
 
 PROD_IOC += XPSGathering2
 XPSGathering2_SRCS += XPSGathering2.c
 XPSGathering2_LIBS += Newport motor asyn
 XPSGathering2_LIBS += $(EPICS_BASE_IOC_LIBS)
-XPSGathering2_SYS_LIBS_Linux += curl
+#XPSGathering2_SYS_LIBS_Linux += curl
+
+PROD_IOC += testCurlUpload
+testCurlUpload_SRCS += testCurlUpload.cpp
+testCurlUpload_LIBS += Newport asyn $(EPICS_BASE_IOC_LIBS)
+#testCurlUpload_SYS_LIBS_Linux += curl
 
 include $(TOP)/configure/RULES
 
