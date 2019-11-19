@@ -108,5 +108,9 @@ PROD_IOC += testSFTPUpload
 testSFTPUpload_SRCS += testSFTPUpload.cpp
 testSFTPUpload_LIBS += Newport asyn $(EPICS_BASE_IOC_LIBS)
 
+ifeq ("$(HAVE_LIBCURL)", "YES")
+  PROD_IOC += curl_gen
+endif
+
 include $(TOP)/configure/RULES
 
