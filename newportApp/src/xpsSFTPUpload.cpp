@@ -24,11 +24,14 @@ int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::s
   std::string auth = userName + ":" + password;
   status |= curl_easy_setopt(curl, CURLOPT_USERPWD, auth.c_str());
   status |= curl_easy_setopt(curl, CURLOPT_UPLOAD, 1);
+  status |= curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+  status |= curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0);
   FILE *fd = fopen(fileName.c_str(), "rb"); /* open file to upload */
   struct stat fileStat;
   fstat(fileno(fd), &fileStat);
   status |= curl_easy_setopt(curl, CURLOPT_INFILESIZE, (long)fileStat.st_size);
   status |= curl_easy_setopt(curl, CURLOPT_READDATA, fd);
+  status |= curl_easy_setopt(curl, CURLOPT_TCP_NODELAY, 1);
   if (verbose) status |= curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
   status |= curl_easy_perform(curl);
   fclose(fd);
@@ -60,7 +63,8 @@ int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::s
   size_t nread;
   char *ptr;
   int rc;
-  int status = -1;  
+  int one = 1;
+  int status = -1;
   std::string remoteFile = trajectoryDirectory + fileName;
 
   rc = libssh2_init(0);
@@ -74,6 +78,7 @@ int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::s
    * and establishing the connection
    */ 
   sockFD = epicsSocketCreate(AF_INET, SOCK_STREAM, 0);
+  setsockopt(sockFD, SOL_TCP, TCP_NODELAY, &one, sizeof(one));
  
   sockAddr.sin_family = AF_INET;
   sockAddr.sin_port = htons(22);
