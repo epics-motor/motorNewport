@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string>
 
+#include <epicsExport.h>
 #include <xpsSFTPUpload.h>
 
 // The following version requires libcurl.
@@ -10,7 +11,7 @@
 #include <sys/stat.h>
 #include <curl/curl.h>
 
-int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
+epicsShareFunc int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
                   std::string userName, std::string password, bool verbose) {
   int status = 0;
   CURL *curl = curl_easy_init();
@@ -49,7 +50,7 @@ int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::s
 #include <libssh2_sftp.h>
 #include <osiSock.h>
 
-int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
+epicsShareFunc int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
                   std::string userName, std::string password, bool verbose) {
   struct sockaddr_in sockAddr;
   SOCKET sockFD = 0;
@@ -181,7 +182,7 @@ int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::s
 
 #else
 // If HAVE_LIBCURL is not YES then try to execute the curl system command
-int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
+epicsShareFunc int xpsSFTPUpload(std::string IPAddress, std::string trajectoryDirectory, std::string fileName, 
                   std::string userName, std::string password, bool verbose) {
   std::string verboseOption = verbose ? " --verbose " : " --silent ";
   std::string command = "curl -k -u " + userName + ":" + password + " -T " + fileName + verboseOption + " scp://" + IPAddress + trajectoryDirectory + "/";
