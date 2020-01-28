@@ -14,7 +14,94 @@
         <string>
 
 QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
-QPushButton::menu-indicator {image: url(none.png); width: 0}
+
+caTable {
+       font: 10pt;
+       background: cornsilk;
+       alternate-background-color: wheat;
+}
+
+caLineEdit {
+     border-radius: 1px;
+     background: lightyellow;
+     color: black;
+ }
+
+caTextEntry {
+    color: rgb(127, 0, 63);
+    background-color: cornsilk;
+    selection-color: #0a214c;
+    selection-background-color: wheat;
+    border: 1px groove black;
+    border-radius: 1px;
+    padding: 1px;
+}
+
+caTextEntry:focus {
+    padding: 0px;
+    border: 2px groove darkred;
+    border-radius: 1px;
+}
+
+QPushButton {
+      border-color: #00b;
+      border-radius: 2px;
+      padding: 3px;
+      border-width: 1px;
+
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						   stop:0   rgba(224, 239, 255, 255),
+						   stop:0.5 rgba(199, 215, 230, 255),
+						   stop:1   rgba(184, 214, 236, 255));
+}
+QPushButton:hover {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(201, 226, 255, 255),
+						stop:0.5 rgba(177, 204, 230, 255),
+						stop:1   rgba(163, 205, 236, 255));
+}
+QPushButton:pressed {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+QPushButton:disabled {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+caChoice {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+}
+
+caChoice &gt; QPushButton {
+      text-align: left;
+      padding: 1px;
+}
+
+caSlider::groove:horizontal {
+border: 1px solid #bbb;
+background: lightgrey;
+height: 20px;
+border-radius: 4px;
+}
+
+caSlider::handle:horizontal {
+background: red;
+border: 1px solid #777;
+width: 13px;
+margin-top: -2px;
+margin-bottom: -2px;
+border-radius: 2px;
+}
+
+
 
 </string>
     </property>
@@ -47,7 +134,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>322</x>
                     <y>6</y>
-                    <width>345</width>
+                    <width>256</width>
                     <height>32</height>
                 </rect>
             </property>
@@ -83,7 +170,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>384</x>
                     <y>52</y>
-                    <width>165</width>
+                    <width>132</width>
                     <height>25</height>
                 </rect>
             </property>
@@ -425,7 +512,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>0</x>
                             <y>12</y>
-                            <width>60</width>
+                            <width>50</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -515,7 +602,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>74</x>
                             <y>12</y>
-                            <width>60</width>
+                            <width>50</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -1347,7 +1434,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>0</x>
                             <y>30</y>
-                            <width>60</width>
+                            <width>50</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -2370,7 +2457,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>74</x>
                             <y>0</y>
-                            <width>60</width>
+                            <width>50</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -2406,7 +2493,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>64</x>
                             <y>30</y>
-                            <width>72</width>
+                            <width>60</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -2499,7 +2586,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>0</x>
                             <y>30</y>
-                            <width>60</width>
+                            <width>50</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -4992,7 +5079,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>74</x>
                             <y>0</y>
-                            <width>60</width>
+                            <width>50</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -5028,7 +5115,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>64</x>
                             <y>30</y>
-                            <width>72</width>
+                            <width>60</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -5066,7 +5153,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>342</x>
                     <y>458</y>
-                    <width>270</width>
+                    <width>216</width>
                     <height>25</height>
                 </rect>
             </property>
@@ -5102,7 +5189,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>160</x>
                     <y>493</y>
-                    <width>60</width>
+                    <width>50</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -5230,7 +5317,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>0</x>
                             <y>30</y>
-                            <width>60</width>
+                            <width>50</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -6547,7 +6634,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>74</x>
                             <y>0</y>
-                            <width>60</width>
+                            <width>50</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -6583,7 +6670,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>64</x>
                             <y>30</y>
-                            <width>72</width>
+                            <width>60</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -6627,7 +6714,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>12</x>
                     <y>540</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -6768,7 +6855,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>16</x>
                     <y>519</y>
-                    <width>60</width>
+                    <width>35</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -6804,7 +6891,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>106</x>
                     <y>519</y>
-                    <width>132</width>
+                    <width>35</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -6840,7 +6927,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>221</x>
                     <y>519</y>
-                    <width>60</width>
+                    <width>35</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -6876,7 +6963,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>300</x>
                     <y>519</y>
-                    <width>60</width>
+                    <width>35</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -6915,7 +7002,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>12</x>
                     <y>565</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -7059,7 +7146,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>12</x>
                     <y>590</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -7203,7 +7290,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>12</x>
                     <y>615</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -7554,7 +7641,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     <rect>
                         <x>136</x>
                         <y>4</y>
-                        <width>72</width>
+                        <width>50</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -7639,7 +7726,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>4</x>
                             <y>0</y>
-                            <width>60</width>
+                            <width>35</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -7724,10 +7811,13 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     <property name="incrementValue">
                         <double>1.000000</double>
                     </property>
-                    <property name="limitsMode">
+                    <property name="lowLimitMode">
                         <enum>caSlider::Channel</enum>
                     </property>
-                    <property name="limitsMode">
+                    <property name="highLimitMode">
+                        <enum>caSlider::Channel</enum>
+                    </property>
+                    <property name="precisionMode">
                         <enum>caSlider::Channel</enum>
                     </property>
                     <property name="minValue">
@@ -7741,6 +7831,12 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     </property>
                     <property name="scalePosition">
                         <enum>NoScale</enum>
+                    </property>
+                    <property name="scaleValueEnabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="autoFocus">
+                        <bool>true</bool>
                     </property>
                     <property name="colorMode">
                         <enum>caSlider::Static</enum>
@@ -7780,7 +7876,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>0</x>
                             <y>21</y>
-                            <width>24</width>
+                            <width>20</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -7819,7 +7915,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>0</x>
                             <y>46</y>
-                            <width>24</width>
+                            <width>20</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -7858,7 +7954,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>0</x>
                             <y>71</y>
-                            <width>24</width>
+                            <width>20</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -7897,7 +7993,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                         <rect>
                             <x>0</x>
                             <y>96</y>
-                            <width>24</width>
+                            <width>20</width>
                             <height>20</height>
                         </rect>
                     </property>
@@ -7982,10 +8078,13 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     <property name="incrementValue">
                         <double>1.000000</double>
                     </property>
-                    <property name="limitsMode">
+                    <property name="lowLimitMode">
                         <enum>caSlider::Channel</enum>
                     </property>
-                    <property name="limitsMode">
+                    <property name="highLimitMode">
+                        <enum>caSlider::Channel</enum>
+                    </property>
+                    <property name="precisionMode">
                         <enum>caSlider::Channel</enum>
                     </property>
                     <property name="minValue">
@@ -7999,6 +8098,12 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     </property>
                     <property name="scalePosition">
                         <enum>NoScale</enum>
+                    </property>
+                    <property name="scaleValueEnabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="autoFocus">
+                        <bool>true</bool>
                     </property>
                     <property name="colorMode">
                         <enum>caSlider::Static</enum>
@@ -8084,10 +8189,13 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     <property name="incrementValue">
                         <double>1.000000</double>
                     </property>
-                    <property name="limitsMode">
+                    <property name="lowLimitMode">
                         <enum>caSlider::Channel</enum>
                     </property>
-                    <property name="limitsMode">
+                    <property name="highLimitMode">
+                        <enum>caSlider::Channel</enum>
+                    </property>
+                    <property name="precisionMode">
                         <enum>caSlider::Channel</enum>
                     </property>
                     <property name="minValue">
@@ -8101,6 +8209,12 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     </property>
                     <property name="scalePosition">
                         <enum>NoScale</enum>
+                    </property>
+                    <property name="scaleValueEnabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="autoFocus">
+                        <bool>true</bool>
                     </property>
                     <property name="colorMode">
                         <enum>caSlider::Static</enum>
@@ -8186,10 +8300,13 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     <property name="incrementValue">
                         <double>1.000000</double>
                     </property>
-                    <property name="limitsMode">
+                    <property name="lowLimitMode">
                         <enum>caSlider::Channel</enum>
                     </property>
-                    <property name="limitsMode">
+                    <property name="highLimitMode">
+                        <enum>caSlider::Channel</enum>
+                    </property>
+                    <property name="precisionMode">
                         <enum>caSlider::Channel</enum>
                     </property>
                     <property name="minValue">
@@ -8203,6 +8320,12 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     </property>
                     <property name="scalePosition">
                         <enum>NoScale</enum>
+                    </property>
+                    <property name="scaleValueEnabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="autoFocus">
+                        <bool>true</bool>
                     </property>
                     <property name="colorMode">
                         <enum>caSlider::Static</enum>
@@ -8280,7 +8403,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                     <rect>
                         <x>25</x>
                         <y>0</y>
-                        <width>48</width>
+                        <width>35</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -8437,7 +8560,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>444</x>
                     <y>519</y>
-                    <width>48</width>
+                    <width>35</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -8671,7 +8794,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>615</x>
                     <y>325</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -8707,7 +8830,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>655</x>
                     <y>325</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -8743,7 +8866,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>695</x>
                     <y>325</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -8779,7 +8902,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>735</x>
                     <y>325</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -8815,7 +8938,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>775</x>
                     <y>325</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -8851,7 +8974,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>815</x>
                     <y>325</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -8887,7 +9010,7 @@ QPushButton::menu-indicator {image: url(none.png); width: 0}
                 <rect>
                     <x>855</x>
                     <y>325</y>
-                    <width>24</width>
+                    <width>20</width>
                     <height>20</height>
                 </rect>
             </property>
