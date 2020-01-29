@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>XPSTop</name>
+  <x>833</x>
+  <y>53</y>
+  <width>200</width>
+  <height>205</height>
+  <background_color>
+    <color red="187" green="187" blue="187">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <grid_step_x>5</grid_step_x>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #6</name>
+    <actions>
+      <action type="open_display">
+        <file>XPSExtra.opi</file>
+        <macros>
+          <M1>m1</M1>
+          <P>IOC:</P>
+        </macros>
+        <target>tab</target>
+        <description>Motor 1</description>
+      </action>
+      <action type="open_display">
+        <file>XPSExtra.opi</file>
+        <macros>
+          <M1>m2</M1>
+          <P>IOC:</P>
+        </macros>
+        <target>tab</target>
+        <description>Motor 2</description>
+      </action>
+    </actions>
+    <text>Extra motor PVs</text>
+    <x>25</x>
+    <y>104</y>
+    <width>150</width>
+    <height>25</height>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #10</name>
+    <actions>
+      <action type="open_display">
+        <file>profileMove.opi</file>
+        <macros>
+          <M1>m1</M1>
+          <M2>m2</M2>
+          <M3>m3</M3>
+          <M4>m4</M4>
+          <M5>m5</M5>
+          <M6>m6</M6>
+          <M7>m7</M7>
+          <M8>m8</M8>
+          <P>IOC:</P>
+          <R>Prof1:</R>
+          <TITLE>XPSProfileMove</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>XPS Profile Move</description>
+      </action>
+    </actions>
+    <text>Profile move</text>
+    <x>25</x>
+    <y>134</y>
+    <width>150</width>
+    <height>25</height>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #13</name>
+    <actions>
+      <action type="open_display">
+        <file>XPSAux.opi</file>
+        <macros>
+          <P>IOC:</P>
+          <R>XPSAux</R>
+        </macros>
+        <target>tab</target>
+        <description>XPS Auxilliary</description>
+      </action>
+    </actions>
+    <text>Auxilliary I/O</text>
+    <x>25</x>
+    <y>74</y>
+    <width>150</width>
+    <height>25</height>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="label" version="2.0.0">
+    <name>text #16</name>
+    <text>Newport XPS Test</text>
+    <x>6</x>
+    <y>11</y>
+    <width>150</width>
+    <height>25</height>
+    <font>
+      <font family="Liberation Sans" style="REGULAR" size="16.0">
+      </font>
+    </font>
+    <auto_size>true</auto_size>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #19</name>
+    <actions>
+      <action type="open_display">
+        <file>motor3x.opi</file>
+        <macros>
+          <M1>m1</M1>
+          <M2>m2</M2>
+          <M3>m3</M3>
+          <P>IOC:</P>
+        </macros>
+        <target>tab</target>
+        <description>Motors</description>
+      </action>
+    </actions>
+    <text>Motors</text>
+    <x>25</x>
+    <y>44</y>
+    <width>150</width>
+    <height>25</height>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+  </widget>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #22</name>
+    <actions>
+      <action type="open_display">
+        <file>XPSPositionCompare8.opi</file>
+        <macros>
+          <M1>m1</M1>
+          <M2>m2</M2>
+          <M3>m3</M3>
+          <M4>m4</M4>
+          <M5>m5</M5>
+          <M6>m6</M6>
+          <M7>m7</M7>
+          <M8>m8</M8>
+          <P>IOC:</P>
+          <R>PC1:</R>
+          <TITLE>XPSProfileMove</TITLE>
+        </macros>
+        <target>tab</target>
+        <description>XPS Position Compare</description>
+      </action>
+    </actions>
+    <text>Position compare</text>
+    <x>25</x>
+    <y>164</y>
+    <width>150</width>
+    <height>25</height>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+  </widget>
+</display>

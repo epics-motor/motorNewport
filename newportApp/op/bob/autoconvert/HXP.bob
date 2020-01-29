@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>HXP</name>
+  <x>342</x>
+  <y>122</y>
+  <width>150</width>
+  <height>189</height>
+  <background_color>
+    <color red="236" green="236" blue="236">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <widget type="group" version="2.0.0">
+    <name>composite #6</name>
+    <x>10</x>
+    <y>10</y>
+    <width>130</width>
+    <height>164</height>
+    <style>3</style>
+    <transparent>true</transparent>
+    <widget type="action_button" version="3.0.0">
+      <name>related display #9</name>
+      <actions>
+        <action type="open_display">
+          <file>HXP_extra.opi</file>
+          <target>tab</target>
+          <description>HXP_extra.adl</description>
+        </action>
+      </actions>
+      <text>HXP extra</text>
+      <y>77</y>
+      <width>130</width>
+      <height>22</height>
+      <foreground_color>
+        <color red="255" green="255" blue="255">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="51" green="153" blue="0">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>related display #12</name>
+      <actions>
+        <action type="open_display">
+          <file>HXP_coordSys.opi</file>
+          <target>tab</target>
+          <description>HXP_coordSys.adl</description>
+        </action>
+      </actions>
+      <text>HXP coordSys</text>
+      <y>142</y>
+      <width>130</width>
+      <height>22</height>
+      <foreground_color>
+        <color red="255" green="255" blue="255">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="51" green="153" blue="0">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>related display #15</name>
+      <actions>
+        <action type="open_display">
+          <file>HXP_motors.opi</file>
+          <target>tab</target>
+          <description>HXP_motors.adl</description>
+        </action>
+      </actions>
+      <text>HXP motors</text>
+      <y>45</y>
+      <width>130</width>
+      <height>22</height>
+      <foreground_color>
+        <color red="255" green="255" blue="255">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="51" green="153" blue="0">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="action_button" version="3.0.0">
+      <name>related display #18</name>
+      <actions>
+        <action type="open_display">
+          <file>HXP_moveAll.opi</file>
+          <target>tab</target>
+          <description>HXP_moveAll.adl</description>
+        </action>
+      </actions>
+      <text>HXP moveAll</text>
+      <y>110</y>
+      <width>130</width>
+      <height>22</height>
+      <foreground_color>
+        <color red="255" green="255" blue="255">
+        </color>
+      </foreground_color>
+      <background_color>
+        <color red="51" green="153" blue="0">
+        </color>
+      </background_color>
+    </widget>
+    <widget type="label" version="2.0.0">
+      <name>text #21</name>
+      <text>$(P)$(R)</text>
+      <width>130</width>
+      <height>30</height>
+      <font>
+        <font family="Liberation Sans" style="REGULAR" size="30.0">
+        </font>
+      </font>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+  </widget>
+</display>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display version="2.0.0">
+  <name>XPSAuxTest</name>
+  <x>839</x>
+  <y>49</y>
+  <width>150</width>
+  <height>100</height>
+  <background_color>
+    <color red="187" green="187" blue="187">
+    </color>
+  </background_color>
+  <grid_visible>false</grid_visible>
+  <grid_step_x>5</grid_step_x>
+  <widget type="action_button" version="3.0.0">
+    <name>related display #6</name>
+    <actions>
+      <action type="open_display">
+        <file>XPSAux.opi</file>
+        <macros>
+          <P>IOC:</P>
+          <R>XPSAux</R>
+        </macros>
+        <target>tab</target>
+        <description>XPS Auxilliary</description>
+      </action>
+    </actions>
+    <text>XPSAux</text>
+    <x>17</x>
+    <y>39</y>
+    <width>110</width>
+    <height>25</height>
+    <background_color>
+      <color red="187" green="187" blue="187">
+      </color>
+    </background_color>
+  </widget>
+</display>
