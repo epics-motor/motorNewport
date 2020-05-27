@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <epicsTime.h>
+#include <epicsExport.h>
 #include <xpsSFTPUpload.h>
 
 int main(int argc, char *argv[])
@@ -15,3 +16,4 @@ int main(int argc, char *argv[])
   printf("xpsSFTPUpload returned status=%d, elapsed time=%f\n", status, elapsedTime);
   return 0;
 }
+
