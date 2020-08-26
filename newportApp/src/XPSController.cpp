@@ -1056,9 +1056,8 @@ asynStatus XPSController::runProfile()
 
   wakeupPoller();
   
-  /* We call the command to run the trajectory on the moveSocket which does not
-   * wait for a reply.  Thus this routine returns immediately without a meaningful
-   * status */
+  /* We call the command to run the trajectory on the moveSocket which waits for a reply,
+     so  MultipleAxesPVTExecution blocks until the trajectory is complete. */
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
             "%s:%s: calling MultipleAxesPVTExecution(%d, %s, %s, %d)\n", 
             driverName, functionName, moveSocket_, groupName, fileName, 1);
