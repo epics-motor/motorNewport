@@ -18,6 +18,11 @@ on:
     branches:
       - master
   pull_request:
+    paths-ignore:
+      - 'documentation/*'
+      - '**/*.html'
+      - '**/*.md'
+      - '.github/workflows/ci-scripts-build-full.yml'
 
 env:
   SETUP_PATH: .ci-local:.ci
