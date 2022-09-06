@@ -1,6 +1,7 @@
 /*
 FILENAME... AG_CONEX.cpp
 USAGE...    Motor driver support for the Newport CONEX-AGP, CONEX-CC and CONEX-PP series controllers.
+Add Support for Newport FCL200, hpj, 6.9.22
 
 Mark Rivers
 April 11, 2013
@@ -192,6 +193,9 @@ AG_CONEXAxis::AG_CONEXAxis(AG_CONEXController *pC)
   else if (strstr(pC->controllerVersion_, "Conex PP")) {
     conexModel_ = ModelConexPP;
   } 
+  else if (strstr(pC->controllerVersion_, "FC series")) {
+    conexModel_ = ModelFCL200;
+  } 
   else {
     asynPrint(pC->pasynUserSelf, ASYN_TRACE_ERROR,
       "%s: unknown model, firmware string=%s\n",
@@ -222,7 +226,7 @@ AG_CONEXAxis::AG_CONEXAxis(AG_CONEXController *pC)
     interpolationFactor_ = 1.;
   }
   
-  if (conexModel_ == ModelConexPP) {
+  if ((conexModel_ == ModelConexPP) || (conexModel_ == ModelFCL200))  {
     sprintf(pC_->outString_, "%dFRM?", pC->controllerID_);
     pC_->writeReadController();
     microStepsPerFullStep_ = atoi(&pC_->inString_[4]);
@@ -301,9 +305,9 @@ asynStatus AG_CONEXAxis::move(double position, int relative, double minVelocity,
 {
   asynStatus status;
   // static const char *functionName = "AG_CONEXAxis::move";
-  
-  // The CONEX-CC and CONEX-PP support velocity and acceleration, the CONEX-AGP does not
-  if ((conexModel_ == ModelConexCC) || (conexModel_ == ModelConexPP)) {
+
+  // The CONEX-CC, CONEX-PP and FCL200 support velocity and acceleration, the CONEX-AGP does not
+  if ((conexModel_ == ModelConexCC) || (conexModel_ == ModelConexPP) || (conexModel_ == ModelFCL200)) {
     sprintf(pC_->outString_, "%dAC%f", pC_->controllerID_, acceleration*stepSize_);
     status = pC_->writeCONEX();
     sprintf(pC_->outString_, "%dVA%f", pC_->controllerID_, maxVelocity*stepSize_);
@@ -332,6 +336,7 @@ asynStatus AG_CONEXAxis::home(double minVelocity, double maxVelocity, double acc
   // The CONEX-CC supports home velocity, but only by going to Configuration state (PW1) 
   // and writing to non-volatile memory with the OH command.
   // This is time-consuming and can only be done a limited number of times so we don't do it here.
+  // Same with FCL200
 
   // The CONEX-PP supports home velocity and home type.  We force negative limit switch home type.
   if (conexModel_ == ModelConexPP) {

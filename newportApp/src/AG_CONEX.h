@@ -13,7 +13,8 @@ April 11, 2013
 typedef enum {
   ModelConexAGP,
   ModelConexCC,
-  ModelConexPP
+  ModelConexPP,
+  ModelFCL200
 } ConexModel_t;
 
 // No controller-specific parameters yet
