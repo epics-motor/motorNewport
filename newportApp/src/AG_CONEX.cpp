@@ -239,7 +239,7 @@ AG_CONEXAxis::AG_CONEXAxis(AG_CONEXController *pC)
   if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC)) {
     stepSize_ = encoderIncrement_ / interpolationFactor_;
   } else if (conexModel_ == ModelFCL200) {
-+   stepSize_ = 1; // Positions in mm on this stage
+    stepSize_ = 1; // Positions in mm on this stage
   } else {
     stepSize_ = fullStepSize_ / microStepsPerFullStep_ / 1000.;
   }
