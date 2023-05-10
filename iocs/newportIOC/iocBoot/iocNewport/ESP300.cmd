@@ -1,4 +1,19 @@
-drvAsynSerialPortConfigure("serial4", "/dev/ttyS3", 0, 0, 0)
+#drvAsynSerialPortConfigure("serial4", "/dev/ttyS0", 0, 0, 0)
+drvAsynSerialPortConfigure("serial4", "/dev/ttyUSB0", 0, 0, 0)
+
+# Configure the serial port
+asynSetOption("serial4",0,"baud","19200")
+asynSetOption("serial4",0,"bits","8")
+asynSetOption("serial4",0,"stop","1")
+asynSetOption("serial4",0,"parity","none")
+asynSetOption("serial4",0,"clocal","Y")
+asynSetOption("serial4",0,"crtscts","N")
+asynOctetSetOutputEos("serial4",0,"\r")
+asynOctetSetInputEos("serial4",0,"\r\n")
+
+# Uncomment following lines to show debug messages
+#asynSetTraceIOMask(serial4, 0, ESCAPE)
+#asynSetTraceMask(serial4, 0, ERROR|DRIVER|FLOW)
 
 dbLoadTemplate("ESP300.substitutions")
 
