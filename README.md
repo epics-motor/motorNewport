@@ -1,6 +1,6 @@
 # motorNewport
 EPICS motor drivers for the following [Newport](https://www.newport.com/) controllers:<br>
-MM3000, MM4000/5/6, PM500, ESP300/301/100, XPSC8, HXP100-ELEC, AG_CONEX and AG_UC
+MM3000, MM4000/5/6, PM500, ESP300/301/100, XPSC8, HXP100-ELEC, AG_CONEX, AG_UC, and SMC100.
 
 [![Build Status](https://github.com/epics-motor/motorNewport/actions/workflows/ci-scripts-build.yml/badge.svg)](https://github.com/epics-motor/motorNewport/actions/workflows/ci-scripts-build.yml)
 <!--[![Build Status](https://travis-ci.org/epics-motor/motorNewport.png)](https://travis-ci.org/epics-motor/motorNewport)-->
