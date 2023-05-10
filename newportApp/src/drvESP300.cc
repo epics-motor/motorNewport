@@ -272,6 +272,9 @@ static int set_status(int card, int signal)
         newposition = NINT(motorData);
         status.Bits.RA_DIRECTION = (newposition >= motor_info->position) ? 1 : 0;
         motor_info->position = newposition;
+        /* Also set the encoder position, since there is only one command
+         * to query the position and the stage might have an encoder */
+        motor_info->encoder_position = newposition;
         motor_info->no_motion_count = 0;
     }
 
