@@ -1,5 +1,27 @@
 # motorNewport Releases
 
+## __R1-2 (2023-05-11)__
+R1-2 is a release based on the master branch.
+
+### Changes since R1-1
+
+#### New features
+* Pull request [#14](https://github.com/epics-motor/motorNewport/pull/14) and [#15](https://github.com/epics-motor/motorNewport/pull/15): [Heinz Junkes](https://github.com/hjunkes) Added support for the Newport FCL200 (FC series) to the AG_CONEX driver
+
+#### Modifications to existing features
+* Commit [e4e75f7](https://github.com/epics-motor/motorNewport/commit/e4e75f7db0ed7947158c24f070d5eda1f2dc78d5): Removed SUPPORT from RELEASE; use RELEASE.local to define it instead, needed for OPI conversion
+* Pull request [#9](https://github.com/epics-motor/motorNewport/pull/9): Added example ESP300 serial port configuration from [Lee Yang](https://github.com/LeeYangLBLBCS)
+
+#### Bug fixes
+* Pull request [#18](https://github.com/epics-motor/motorNewport/pull/18): drvESP300.cc now sets both position and encoder_position, so that UEIP of the motor record can be set to YES.
+
+#### Documentation
+* Pull request [#17](https://github.com/epics-motor/motorNewport/pull/17): Added SMC100 to README.md
+
+#### Continuous integration
+* Added ci-scripts (v3.0.1)
+* Switched from Travis CI to Github Actions
+
 ## __R1-1 (2020-05-12)__
 R1-1 is a release based on the master branch.  
 
