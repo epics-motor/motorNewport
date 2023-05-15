@@ -1,5 +1,13 @@
 # motorNewport Releases
 
+## __R1-2-1 (2023-05-15)__
+R1-2-1 is a release based on the master branch.
+
+### Changes since R1-2
+
+#### Bug fixes
+* Pull request [#20](https://github.com/epics-motor/motorNewport/pull/20): Fix for 'make uninstall' removing iocsh files
+
 ## __R1-2 (2023-05-11)__
 R1-2 is a release based on the master branch.
 
