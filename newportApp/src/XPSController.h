@@ -119,7 +119,6 @@ class epicsShareClass XPSController : public asynMotorController {
   int XPSTclScriptExecute_;
   #define LAST_XPS_PARAM XPSTclScriptExecute_
 
-  private:
   bool enableSetPosition_;          /**< Enable/disable setting the position from EPICS */ 
   double setPositionSettlingTime_;  /**< The settling (sleep) time used when setting position. */
   char *IPAddress_;
