@@ -470,7 +470,7 @@ asynStatus AG_CONEXAxis::setDGain(double dGain)
 {
   asynStatus status = asynSuccess;
   bool closedLoop;
-  //static const char *functionName = "AG_CONEXAxis::setPGain";
+  //static const char *functionName = "AG_CONEXAxis::setDGain";
 
   if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC) || (conexModel_ == ModelDL)) {
     getClosedLoop(&closedLoop);
