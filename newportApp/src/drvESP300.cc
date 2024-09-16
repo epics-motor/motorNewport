@@ -64,11 +64,12 @@ USAGE...    Motor record driver level support for Newport ESP300/100.
 #include "asynOctetSyncIO.h"
 #include "epicsExport.h"
 
-#define READ_POSITION   "%.2dTP"
+#define READ_POSITION   "%.2dTP?"
 #define STOP_AXIS   "%.2dST"
 #define GET_IDENT       "VE?"
 
 #define ESP300_NUM_CARDS    4
+#define ESP300_MAX_AXIS     6
 #define BUFF_SIZE 100       /* Maximum length of string to/from ESP300 */
 
 /* The ESP300 does not respond for 2 to 5 seconds after hitting a travel limit. */
@@ -189,7 +190,7 @@ static long init()
     /* Check for setup */
     if (ESP300_num_cards <= 0)
     {
-        Debug(1, "init(): ESP300 driver disabled. ESP300Setup() missing from startup script.\n");
+        Debug(1, "ESP300 init(): driver disabled. ESP300Setup() missing from startup script.\n");
     }
     return((long) 0);
 }
@@ -211,12 +212,12 @@ static int set_status(int card, int signal)
     struct mess_node *nodeptr;
     register struct mess_info *motor_info;
     /* Message parsing variables */
-    char *cptr, *tok_save;
+    char *cptr;
     char inbuff[BUFF_SIZE], outbuff[BUFF_SIZE];
     int rtn_state, charcnt, errcode;
-    long mstatus;
+    long mstatus, limits;
     double motorData;
-    bool power, plusdir, ls_active = false;
+    bool power, plusdir, ls_active = false, use_limits;
     msta_field status;
 
     cntrl = (struct MMcontroller *) motor_state[card]->DevicePrivate;
@@ -224,6 +225,20 @@ static int set_status(int card, int signal)
     nodeptr = motor_info->motor_motion;
     status.All = motor_info->status.All;
 
+    /* Clear errors before we start */
+    send_mess(card, "TB?", NULL);
+    recv_mess(card, inbuff, 1);
+    if (inbuff[0] != '0')
+    {
+        status.Bits.RA_PROBLEM = 1;
+        printf("ESP300 status error: %s.\n", inbuff);
+        goto exit;
+    }
+    else
+        status.Bits.RA_PROBLEM = 0;
+
+
+//printf("ESP300 set_status(card=%d, signal=%d)\n", card, signal);
     sprintf(outbuff, "%.2dMD", signal + 1);
     send_mess(card, outbuff, NULL);
     charcnt = recv_mess(card, inbuff, 1);
@@ -235,6 +250,7 @@ static int set_status(int card, int signal)
     }
     else
     {
+        //printf("*** MD command returned %s rather than '0' or '1'\n", inbuff);
         if (cntrl->status == NORMAL)
         {
             cntrl->status = RETRY;
@@ -250,6 +266,7 @@ static int set_status(int card, int signal)
             goto exit;
         }
     }
+//send_mess(card, "TB?", NULL); recv_mess(card, inbuff, 1);
 
     status.Bits.RA_DONE = (inbuff[0] == '1') ? 1 : 0;
 
@@ -257,8 +274,8 @@ static int set_status(int card, int signal)
     sprintf(outbuff, READ_POSITION, signal + 1);
     send_mess(card, outbuff, NULL);
     charcnt = recv_mess(card, inbuff, 1);
-
     motorData = atof(inbuff) / cntrl->drive_resolution[signal];
+//send_mess(card, "TB?", NULL); recv_mess(card, inbuff, 1);
 
     if (motorData == motor_info->position)
     {
@@ -280,50 +297,65 @@ static int set_status(int card, int signal)
 
     plusdir = (status.Bits.RA_DIRECTION) ? true : false;
 
-    /* Get travel limit switch status. */
-    sprintf(outbuff, "%.2dPH", signal + 1);
+    /* Check for hardware limit switches */
+    sprintf(outbuff, "%.2dZH?", signal + 1);
     send_mess(card, outbuff, NULL);
     charcnt = recv_mess(card, inbuff, 1);
-    cptr = strchr(inbuff, 'H');
-    if (cptr == NULL)
-    {
-        Debug(2, "set_status(): PH error = %s\n", inbuff);
-        rtn_state = 1;
-        goto exit;
-    }
-    mstatus = strtol(inbuff, &cptr, 16);
+    limits = strtol(inbuff, NULL, 16);
+    use_limits = (limits&0x1 == 0) || (limits&0x5 == 0);
+//send_mess(card, "TB?", NULL); recv_mess(card, inbuff, 1);
 
-    /* Set Travel limit switch status bits. */
-    if (((mstatus >> signal) & 0x01) == false)
+    if (use_limits) {
+        /* Get travel limit switch status. */
+        sprintf(outbuff, "%.2dPH", signal + 1);
+        send_mess(card, outbuff, NULL);
+        charcnt = recv_mess(card, inbuff, 1);
+        // TODO: don't need strchr. Instead check *cptr=='H' after mstatus translation.
+        cptr = strchr(inbuff, 'H');
+        if (cptr == NULL)
+        {
+            Debug(2, "ESP300 set_status(): PH error = %s\n", inbuff);
+            rtn_state = 1;
+            goto exit;
+        }
+        mstatus = strtol(inbuff, &cptr, 16);
+
+        /* Set Travel limit switch status bits. */
+        if (((mstatus >> signal) & 0x01) == false)
+            status.Bits.RA_PLUS_LS = 0;
+        else
+        {
+            status.Bits.RA_PLUS_LS = 1;
+            if (plusdir == true)
+                ls_active = true;
+        }
+
+        if (((mstatus >> (signal + 8)) & 0x01) == false)
+            status.Bits.RA_MINUS_LS = 0;
+        else
+        {
+            status.Bits.RA_MINUS_LS = 1;
+            if (plusdir == false)
+                ls_active = true;
+        }
+
+        /* Skip trailing "H," and set home switch status from the next hex number. */
+        mstatus = strtol(cptr+2, NULL, 16);
+//send_mess(card, "TB?", NULL); recv_mess(card, inbuff, 1);
+
+        status.Bits.RA_HOME = ((mstatus >> signal) & 0x01) ? 1 : 0;
+    } else {
         status.Bits.RA_PLUS_LS = 0;
-    else
-    {
-        status.Bits.RA_PLUS_LS = 1;
-        if (plusdir == true)
-            ls_active = true;
-    }
-
-    if (((mstatus >> (signal + 8)) & 0x01) == false)
         status.Bits.RA_MINUS_LS = 0;
-    else
-    {
-        status.Bits.RA_MINUS_LS = 1;
-        if (plusdir == false)
-            ls_active = true;
+        status.Bits.RA_HOME = 0;
     }
-
-    /* Set home switch status. */
-    cptr += 2;
-    tok_save = strchr(inbuff, 'H');
-    mstatus = strtol(cptr, &tok_save, 16);
-
-    status.Bits.RA_HOME = ((mstatus >> signal) & 0x01) ? 1 : 0;
 
     /* Get motor power on/off status. */
     sprintf(outbuff, "%.2dMO?", signal + 1);
     send_mess(card, outbuff, NULL);
     charcnt = recv_mess(card, inbuff, 1);
     power = atoi(inbuff) ? true : false;
+//send_mess(card, "TB?", NULL); recv_mess(card, inbuff, 1);
 
     status.Bits.EA_POSITION = (power == true) ? 1 : 0;
 
@@ -333,10 +365,10 @@ static int set_status(int card, int signal)
     status.Bits.EA_HOME     = 0;
 
     /* Get error code. */
-    sprintf(outbuff, "%.2dTE?", signal + 1);
-    send_mess(card, outbuff, NULL);
+    send_mess(card, "TE?", NULL);
     charcnt = recv_mess(card, inbuff, 1);
     errcode = atoi(inbuff);
+//send_mess(card, "TB?", NULL); recv_mess(card, inbuff, 1);
     if (errcode != 0)
     {
         status.Bits.RA_PROBLEM = 1;
@@ -367,6 +399,27 @@ static int set_status(int card, int signal)
 
 exit:
     motor_info->status.All = status.All;
+
+#if 0
+    printf("    set_status bits = 0x%x\n", status.All);
+    printf("    RA_DIRECTION   %d (last) 0=Negative, 1=Positive\n", status.Bits.RA_DIRECTION);
+    printf("    RA_DONE        %d a motion is complete\n", status.Bits.RA_DONE);
+    printf("    RA_PLUS_LS     %d plus limit switch has been hit\n", status.Bits.RA_PLUS_LS);
+    printf("    RA_HOME        %d The home signal is on\n", status.Bits.RA_HOME);
+    printf("    EA_SLIP        %d encoder slip enabled\n", status.Bits.EA_SLIP);
+    printf("    EA_POSITION    %d position maintenence enabled\n", status.Bits.EA_POSITION);
+    printf("    EA_SLIP_STALL  %d slip/stall detected\n", status.Bits.EA_SLIP_STALL);
+    printf("    EA_HOME        %d encoder home signal on\n", status.Bits.EA_HOME);
+    printf("    EA_PRESENT     %d encoder is present\n", status.Bits.EA_PRESENT);
+    printf("    RA_PROBLEM     %d driver stopped polling\n", status.Bits.RA_PROBLEM);
+    printf("    RA_MOVING      %d non-zero velocity present\n", status.Bits.RA_MOVING);
+    printf("    GAIN_SUPPORT   %d Motor supports closed-loop position control.\n", status.Bits.GAIN_SUPPORT);
+    printf("    CNTRL_COMM_ERR %d Controller communication error.\n", status.Bits.CNTRL_COMM_ERR);
+    printf("    RA_MINUS_LS    %d minus limit switch has been hit\n", status.Bits.RA_MINUS_LS);
+    printf("    RA_HOMED       %d Axis has been homed.\n", status.Bits.RA_HOMED);
+    printf("    na             %d N/A bits.\n", status.Bits.na);
+#endif
+
     return(rtn_state);
 }
 
@@ -403,7 +456,7 @@ static RTN_STATUS send_mess(int card, const char *com, const char *name)
         return(ERROR);
     }
 
-    Debug(2, "send_mess(): message = %s\n", com);
+    Debug(2, "ESP300 send: %s\n", com);
 
     cntrl = (struct MMcontroller *) motor_state[card]->DevicePrivate;
 
@@ -509,7 +562,8 @@ static int recv_mess(int card, char *com, int flag)
         com[nread] = '\0';  /* Strip trailing CR. */
     }
     
-    Debug(2, "recv_mess(): message = \"%s\"\n", com);
+    Debug(2, "ESP300 recv: \"%s\"\n", com);
+
     return((int)nread);
 }
 
@@ -534,6 +588,7 @@ ESP300Setup(int num_cards,  /* maximum number of controllers in system.  */
         targs.motor_scan_rate = scan_rate;
     else
         targs.motor_scan_rate = SCAN_RATE;
+    //printf("ESP300 Setup motor scan rate %d (or %d if scan rate not in [1, 60])\n", scan_rate, SCAN_RATE);
 
     /*
      * Allocate space for motor_state structures.  Note this must be done
@@ -594,6 +649,7 @@ static int motor_init()
     static const char output_terminator[] = "\r";
     static const char input_terminator[]  = "\n";
     static const char errmsg[] = "drvESP300.c:motor_init: ASYN";
+    //printf("ESP300 motor init\n");
 
     initialized = true; /* Indicate that driver is initialized. */
 
@@ -655,25 +711,49 @@ errexit:
             brdptr->motor_in_motion = 0;
             strcpy(brdptr->ident, &buff[1]);  /* Skip "\n" */
 
-            send_mess(card_index, "ZU", NULL);
-            recv_mess(card_index, buff, 1);
-            total_axis = buff[0] >> 4;
-            if (total_axis > 4)
-            {
-                Debug(2, "motor_init(): ZU = %s\n", buff);
-                total_axis = 4;
-            }
+            // ZU command does not return the number of axes
+            // ESP300: bits 8-10 are true if stages are ESP compatible
+            // ESP301: bits 0-5 are true if stages are "universal"; 8-13 ESP compatible
+            // ESP302: bits 0-2 are true if stages are ESP compatible
+            // The following will return 3 if the first byte of the ZU hex value is
+            // in 0-9 and 4 if it is in A-F.
+            //send_mess(card_index, "ZU", NULL);
+            //recv_mess(card_index, buff, 1);
+            //total_axis = buff[0] >> 4;
+            //if (total_axis > 4)
+            //{
+            //    Debug(2, "ESP300 motor_init: ZU = %s\n", buff);
+            //    total_axis = 4;
+            //}
 
-            for (motor_index = 0; motor_index < total_axis; motor_index++)
+            // Stop all motors, checking for "Axis number out of range" to determine
+            // the number of axes on the device.
+            for (motor_index = 0; motor_index < ESP300_MAX_AXIS; motor_index++)
             {
                 sprintf(buff, STOP_AXIS, motor_index + 1);  /* Stop motor */
-                send_mess(card_index, buff, NULL);
+                send_mess(card_index, buff, 0);
+                // Check for axis number out of range.
+                send_mess(card_index, "TB?", 0);
+                recv_mess(card_index, buff, 1);
+                status = atoi(buff);
+                if (status == 9) break;
+                // Check for other errors, aborting if any. Note that a missing stage
+                // is not an error.
+                if (status != 0) {
+                    errlogPrintf("Error accessing motor %d: %s\n", motor_index+1, buff);
+                    break;
+                }
                 /* Initialize. */
                 brdptr->motor_info[motor_index].motor_motion = NULL;
             }
 
+            // Since motor indices start at zero, the index of the motor which causes
+            // the error equals the total number of motors.
+            total_axis = motor_index;
             brdptr->total_axis = total_axis;
 
+            // TODO: What is returned for SN?, ZB?, FR?, QS? and SU? when there is no stage defined.
+            // Query the configuration of each motor.
             for (motor_index = 0; motor_index < total_axis; motor_index++)
             {
                 struct mess_info *motor_info = &brdptr->motor_info[motor_index];
@@ -691,10 +771,12 @@ errexit:
                 sprintf(buff, "%.2dZB?", motor_index + 1);
                 send_mess(card_index, buff, 0);
                 recv_mess(card_index, buff, 1);
-                feedback = strtol(buff,0,16);
+                feedback = strtol(buff, NULL, 16);
                 /* If stepper closed loop positioning is enabled (bit 9=1) and encoder feedback is disabled (bit 8=0) 
                  * then use the full-step resolution (FR) and microstepping (QS) to determine drive_resolution.
-                 * If not then use SU (encoder resolution) for drive_resolution. */
+                 * If not then use SU (encoder resolution) for drive_resolution.
+                 * If neither closed loop nor encoder feedback, then no encoder, and use FR for drive_resolution
+                 * with no microstepping correction. */
                 if ((feedback & 0x300) == 0x200) {
                     sprintf(buff, "%.2dFR?", motor_index + 1);
                     send_mess(card_index, buff, 0);
@@ -703,8 +785,14 @@ errexit:
                     sprintf(buff, "%.2dQS?", motor_index + 1);
                     send_mess(card_index, buff, 0);
                     recv_mess(card_index, buff, 1);
-                    microStep = strtol(buff, 0, 10);
+                    microStep = strtol(buff, NULL, 10);
                     cntrl->drive_resolution[motor_index] = fullStep / microStep;
+                } else if ((feedback & 0x300) == 0x0) {
+                    sprintf(buff, "%.2dFR?", motor_index + 1);
+                    send_mess(card_index, buff, 0);
+                    recv_mess(card_index, buff, 1);
+                    fullStep = atof(buff);
+                    cntrl->drive_resolution[motor_index] = fullStep;
                 } else {
                     sprintf(buff, "%.2dSU?", motor_index + 1);
                     send_mess(card_index, buff, 0);
@@ -715,7 +803,7 @@ errexit:
                 motor_info->no_motion_count = 0;
                 motor_info->encoder_position = 0;
                 motor_info->position = 0;
-                motor_info->encoder_present = YES;
+                motor_info->encoder_present = ((feedback & 0x300) == 0x0) ? NO : YES ;
 
                 if (motor_info->encoder_present == YES)
                 {
@@ -723,6 +811,7 @@ errexit:
                     motor_info->pid_present = YES;
                     motor_info->status.Bits.GAIN_SUPPORT = 1;
                 }
+                Debug(2, "ESP300 init %d resolution=%f encoder=%d\n", motor_index, cntrl->drive_resolution[motor_index], motor_info->encoder_present);
 
                 set_status(card_index, motor_index);  /* Read status of each motor */
             }
