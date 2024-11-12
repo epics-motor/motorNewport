@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/support/motor-7-3/modules/motorNewport/newportApp/op/adl/XPSPositionCompare.adl"
+	name="/home/epics/support/motor/modules/motorNewport/newportApp/op/adl/XPSPositionCompare.adl"
 	version=030117
 }
 display {
@@ -147,16 +147,16 @@ polyline {
 }
 text {
 	object {
-		x=235
+		x=245
 		y=56
-		width=60
+		width=40
 		height=20
 	}
 	"basic attribute" {
 		clr=54
 		fill="outline"
 	}
-	textix="Enable"
+	textix="Mode"
 	align="horiz. centered"
 }
 rectangle {
