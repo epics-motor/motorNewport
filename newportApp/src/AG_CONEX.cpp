@@ -177,6 +177,12 @@ AG_CONEXAxis::AG_CONEXAxis(AG_CONEXController *pC)
 {
   static const char *functionName = "AG_CONEXAxis::AG_CONEXAxis";
 
+  // avoid constructor warnings
+  KD_=0.;
+  KI_=0.;
+  LF_=0.;
+  KP_=0.;
+
   // Figure out what model this is
   if (strstr(pC->controllerVersion_, "CONEX-AGP")) {
     conexModel_ = ModelConexAGP;
@@ -195,7 +201,10 @@ AG_CONEXAxis::AG_CONEXAxis(AG_CONEXController *pC)
   } 
   else if (strstr(pC->controllerVersion_, "FC series")) {
     conexModel_ = ModelFCL200;
-  } 
+  }
+  else if (strstr(pC->controllerVersion_, "DL")) {
+    conexModel_ = ModelDL;
+  }
   else {
     asynPrint(pC->pasynUserSelf, ASYN_TRACE_ERROR,
       "%s: unknown model, firmware string=%s\n",
@@ -240,6 +249,13 @@ AG_CONEXAxis::AG_CONEXAxis(AG_CONEXController *pC)
     stepSize_ = encoderIncrement_ / interpolationFactor_;
   } else if (conexModel_ == ModelFCL200) {
     stepSize_ = 1; // Positions in mm on this stage
+  } else if (conexModel_ == ModelDL) {
+    // Model DL operates in mm and doubles, no conversion required
+    // but MotorRecord expects this value to be integer, to prevent
+    // decimals to be stripped off by MotorRecord, we multiply by 1e4 
+    // and then set resolution to 1e-4
+    fullStepSize_ = microStepsPerFullStep_ =1.;
+    stepSize_ = 0.0001;
   } else {
     stepSize_ = fullStepSize_ / microStepsPerFullStep_ / 1000.;
   }
@@ -268,7 +284,7 @@ void AG_CONEXAxis::report(FILE *fp, int level)
 {
   if (level > 0) {
     // Read KOP, KI, LF (CC and AGP only)
-    if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC)) {  
+    if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC) || (conexModel_ == ModelDL)) {  
       sprintf(pC_->outString_, "%dKP?", pC_->controllerID_);
       pC_->writeReadController();
       KP_ = atof(&pC_->inString_[3]);
@@ -279,7 +295,7 @@ void AG_CONEXAxis::report(FILE *fp, int level)
         sprintf(pC_->outString_, "%dLF?", pC_->controllerID_);
         pC_->writeReadController();
         LF_ = atof(&pC_->inString_[3]);
-      } else if (conexModel_ == ModelConexCC) {
+      } else if (conexModel_ == ModelConexCC || (conexModel_ == ModelDL)) {
         sprintf(pC_->outString_, "%dKD?", pC_->controllerID_);
         pC_->writeReadController();
         KD_ = atof(&pC_->inString_[3]);
@@ -308,8 +324,8 @@ asynStatus AG_CONEXAxis::move(double position, int relative, double minVelocity,
   asynStatus status;
   // static const char *functionName = "AG_CONEXAxis::move";
 
-  // The CONEX-CC, CONEX-PP and FCL200 support velocity and acceleration, the CONEX-AGP does not
-  if ((conexModel_ == ModelConexCC) || (conexModel_ == ModelConexPP) || (conexModel_ == ModelFCL200)) {
+  // The CONEX-CC, CONEX-PP, FCL200 and DL support velocity and acceleration, the CONEX-AGP does not
+  if ((conexModel_ == ModelConexCC) || (conexModel_ == ModelConexPP) || (conexModel_ == ModelFCL200) || (conexModel_ == ModelDL)) {
     sprintf(pC_->outString_, "%dAC%f", pC_->controllerID_, acceleration*stepSize_);
     status = pC_->writeCONEX();
     sprintf(pC_->outString_, "%dVA%f", pC_->controllerID_, maxVelocity*stepSize_);
@@ -339,6 +355,13 @@ asynStatus AG_CONEXAxis::home(double minVelocity, double maxVelocity, double acc
   // and writing to non-volatile memory with the OH command.
   // This is time-consuming and can only be done a limited number of times so we don't do it here.
   // Same with FCL200
+
+  // The DL needs initialization sequence after reset
+  if (conexModel_ == ModelDL) {
+    sprintf(pC_->outString_, "%dIE", pC_->controllerID_);
+    status = pC_->writeCONEX();
+    epicsThreadSleep(5.0);
+  }
 
   // The CONEX-PP supports home velocity and home type.  We force negative limit switch home type.
   if (conexModel_ == ModelConexPP) {
@@ -415,7 +438,7 @@ asynStatus AG_CONEXAxis::setPGain(double pGain)
   bool closedLoop;
   //static const char *functionName = "AG_CONEXAxis::setPGain";
 
-  if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC)) {
+  if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC) || (conexModel_ == ModelDL)) {
     getClosedLoop(&closedLoop);
     setClosedLoop(false);
     // The pGain value from the motor record is between 0 and 1.
@@ -432,7 +455,7 @@ asynStatus AG_CONEXAxis::setIGain(double iGain)
   bool closedLoop;
   //static const char *functionName = "AG_CONEXAxis::setIGain";
 
-  if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC)) {
+  if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC) || (conexModel_ == ModelDL)) {
     getClosedLoop(&closedLoop);
     setClosedLoop(false);
     // The iGain value from the motor record is between 0 and 1.
@@ -447,12 +470,12 @@ asynStatus AG_CONEXAxis::setDGain(double dGain)
 {
   asynStatus status = asynSuccess;
   bool closedLoop;
-  //static const char *functionName = "AG_CONEXAxis::setPGain";
+  //static const char *functionName = "AG_CONEXAxis::setDGain";
 
-  if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC)) {
+  if ((conexModel_ == ModelConexAGP) || (conexModel_ == ModelConexCC) || (conexModel_ == ModelDL)) {
     getClosedLoop(&closedLoop);
     setClosedLoop(false);
-    if (conexModel_ == ModelConexCC) {
+    if ((conexModel_ == ModelConexCC) || (conexModel_ == ModelDL)) {
       // The dGain value from the motor record is between 0 and 1.
       sprintf(pC_->outString_, "%dKI%f", pC_->controllerID_, dGain*KDMax_);
     } else if (conexModel_ == ModelConexAGP) {
@@ -496,12 +519,27 @@ asynStatus AG_CONEXAxis::poll(bool *moving)
   sprintf(pC_->outString_, "%dTS", pC_->controllerID_);
   comStatus = pC_->writeReadController();
   if (comStatus) goto skip;
-  // The response string is of the form "1TSabcdef"
-  count = sscanf(pC_->inString_, "%*dTS%*4c%x", &status);
-  if (count != 1) goto skip;
+  
+  if (conexModel_ == ModelDL) {
+    // The TS command returns 8 characters (1TSabcdefgh).
+    // The first character (a) represents the status bits in Hexadecimal.
+    // The next 5 characters (bcdef) represent the error bits in Hexadecimal.
+    // The last two characters (gh) represent the Controller state in Hexadecimal.
+    // we read last two hex characters, the state
+    count = sscanf(pC_->inString_, "%*dTS%*6c%x", &status);
+    if (count != 1) goto skip;
+  } else {
+    // The response string is of the form "1TSabcdef"
+    count = sscanf(pC_->inString_, "%*dTS%*4c%x", &status);
+    if (count != 1) goto skip;
+  }
 
-  state = status & 0xff;
-  if ((state == 0x1e) || (state == 0x28)) done = 0;
+  if (conexModel_ == ModelDL) {
+    if (status == 0x3c) done=0;
+  } else {
+    state = status & 0xff;
+    if ((state == 0x1e) || (state == 0x28)) done = 0;
+  }
   setIntegerParam(pC_->motorStatusDone_, done);
   *moving = done ? false:true;
 

@@ -54,7 +54,7 @@ class epicsShareClass XPSAxis : public asynMotorAxis
   virtual asynStatus defineProfile(double *positions, size_t numPoints);
   virtual asynStatus readbackProfile();
   
-  private:
+  protected:
   XPSController *pC_;
   char *getXPSError(int status, char *buffer);
   int isInGroup();

@@ -14,6 +14,7 @@ typedef enum {
   ModelConexAGP,
   ModelConexCC,
   ModelConexPP,
+  ModelDL,
   ModelFCL200
 } ConexModel_t;
 
