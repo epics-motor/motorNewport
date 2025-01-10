@@ -34,6 +34,10 @@ extern "C"
 
 #define DLL_VERSION "Library version for HXP Firmware V1.3.x"
 
+const static char * const str_HexapodPositionCurrentGet = "HexapodPositionCurrentGet";
+const static char * const str_GroupPositionCurrentGet = "GroupPositionCurrentGet";
+const static char * str_XPositionCurrentGet = str_GroupPositionCurrentGet;
+
 /************************************************************************* 
 * Replace 'oldChar' by 'newChar' only between the startChar and endChar 
 *************************************************************************/ 
@@ -2983,7 +2987,7 @@ int __stdcall HXPGroupPositionCurrentGet (int SocketIndex, char * GroupName, int
 	char temp[SIZE_NOMINAL];
 
 	/* Convert to string */ 
-	sprintf (ExecuteMethod, "GroupPositionCurrentGet (%s,", GroupName);
+	sprintf (ExecuteMethod, "%s (%s,", str_XPositionCurrentGet, GroupName);
 	for (int i = 0; i < NbElements; i++)
 	{
 		sprintf (temp, "double *");
@@ -3043,7 +3047,7 @@ int __stdcall HXPGroupPositionSetpointGet (int SocketIndex, char * GroupName, in
 	char temp[SIZE_NOMINAL];
 
 	/* Convert to string */ 
-	sprintf (ExecuteMethod, "GroupPositionSetpointGet (%s,", GroupName);
+	sprintf (ExecuteMethod, "%s (%s,", str_XPositionCurrentGet, GroupName);
 	for (int i = 0; i < NbElements; i++)
 	{
 		sprintf (temp, "double *");
@@ -3143,6 +3147,13 @@ int __stdcall HXPGroupPositionTargetGet (int SocketIndex, char * GroupName, int 
 	return (ret); 
 }
 
+/*********************************************************************** 
+ * SetHexapodForFirmwareXPS_D
+ ***********************************************************************/ 
+void __stdcall HXPSetHexapodForFirmwareXPS_D()
+{
+     str_XPositionCurrentGet = str_HexapodPositionCurrentGet;
+}
 
 /*********************************************************************** 
  * GroupStatusGet :  Return group status

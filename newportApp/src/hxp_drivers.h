@@ -92,6 +92,7 @@ DLL int __stdcall HXPGroupPositionCorrectedProfilerGet (int SocketIndex, char * 
 DLL int __stdcall HXPGroupPositionCurrentGet (int SocketIndex, char * GroupName, int NbElements, double CurrentEncoderPosition[]);  /* Return current positions */
 DLL int __stdcall HXPGroupPositionSetpointGet (int SocketIndex, char * GroupName, int NbElements, double SetPointPosition[]);  /* Return setpoint positions */
 DLL int __stdcall HXPGroupPositionTargetGet (int SocketIndex, char * GroupName, int NbElements, double TargetPosition[]);  /* Return target positions */
+DLL void __stdcall HXPSetHexapodForFirmwareXPS_D ();
 DLL int __stdcall HXPGroupStatusGet (int SocketIndex, char * GroupName, int * Status);  /* Return group status */
 DLL int __stdcall HXPGroupStatusStringGet (int SocketIndex, int GroupStatusCode, char * GroupStatusString);  /* Return the group status string corresponding to the group status code */
 DLL int __stdcall HXPKillAll (int SocketIndex);  /* Put all groups in 'Not initialized' state */

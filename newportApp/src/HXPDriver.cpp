@@ -105,6 +105,10 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
   
   HXPFirmwareVersionGet(pollSocket_, firmwareVersion_);
 
+  if (strstr(firmwareVersion_, "HXP-D ")) {
+    HXPSetHexapodForFirmwareXPS_D();
+  }
+
   for (axis=0; axis<NUM_AXES; axis++) {
     pAxis = new HXPAxis(this, axis);
   }
