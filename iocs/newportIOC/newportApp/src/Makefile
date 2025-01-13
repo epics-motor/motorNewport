@@ -23,6 +23,9 @@ newport_DBD += base.dbd
 newport_DBD += asyn.dbd
 newport_DBD += drvAsynSerialPort.dbd
 #endif
+#ifdef CALC
+newport_DBD += calc.dbd
+#endif
 newport_DBD += motorSupport.dbd
 newport_DBD += devNewport.dbd
 
@@ -31,6 +34,9 @@ newport_LIBS += Newport
 newport_LIBS += motor
 #ifdef ASYN
 newport_LIBS += asyn
+#endif
+#ifdef CALC
+newport_LIBS += calc
 #endif
 #ifdef SNCSEQ
 newport_LIBS += seq pv
