@@ -56,6 +56,7 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
 
   IPAddress_ = epicsStrDup(IPAddress);
   IPPort_ = IPPort;
+  memset (firmwareVersion_, 0, sizeof(firmwareVersion_));
 
   createParam(HXPMoveCoordSysString,          asynParamInt32,   &HXPMoveCoordSys_);
   createParam(HXPStatusString,                asynParamInt32,   &HXPStatus_);
@@ -103,12 +104,6 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
            driverName, functionName);
   }
   
-  HXPFirmwareVersionGet(pollSocket_, firmwareVersion_);
-
-  if (strstr(firmwareVersion_, "HXP-D ")) {
-    HXPSetHexapodForFirmwareXPS_D();
-  }
-
   for (axis=0; axis<NUM_AXES; axis++) {
     pAxis = new HXPAxis(this, axis);
   }
@@ -381,6 +376,14 @@ asynStatus HXPController::poll()
 
   static const char *functionName = "HXPController::poll";
 
+  if (!firmwareVersion_[0]) {
+    HXPFirmwareVersionGet(pollSocket_, firmwareVersion_);
+    if (strstr(firmwareVersion_, "HXP-D ")) {
+      HXPSetHexapodForFirmwareXPS_D();
+    }
+  }
+
+  
   status = HXPGroupStatusGet(pollSocket_, 
                           GROUP, 
                           &groupStatus_);
@@ -457,6 +460,7 @@ asynStatus HXPController::poll()
 
   done:
   setIntegerParam(motorStatusProblem_, status ? 1:0);
+  if (status) firmwareVersion_[0] = 0;
   callParamCallbacks();
   return status ? asynError : asynSuccess;
 }
@@ -674,10 +678,9 @@ asynStatus HXPAxis::setClosedLoop(bool closedLoop)
   * \param[out] moving A flag that is set indicating that the axis is moving (true) or done (false). */
 asynStatus HXPAxis::poll(bool *moving)
 { 
-  int status;
   //char readResponse[25];
 
-  static const char *functionName = "HXPAxis::poll";
+  //static const char *functionName = "HXPAxis::poll";
 
   /* If the group is not moving then the axis is not moving */
   moving_ = pC_->moving_;

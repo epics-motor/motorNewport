@@ -75,8 +75,6 @@ private:
   char errorDescFull_[1024];
   double encoderPosition_;
   double setpointPosition_;
-  int axisStatus_;
-  double mres_;
   bool moving_;
   
 friend class HXPController;

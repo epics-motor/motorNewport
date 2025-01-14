@@ -1,6 +1,8 @@
 dbLoadTemplate("motor.substitutions.hxp")
 
-HXPCreateController("HXP1", "192.168.1.42", 5001, 200, 1000)
+#HXPCreateController("HXP1", "192.168.1.42", 5001, 200, 1000)
+# TODO ???
+HXPCreateController("HXP1", "192.168.0.254", 5001, 200, 1000)
 # A shorter, idle-poll period is desirable if the motors
 # are moved using HXP_moveAll.adl, since this period determines
 # how long it takes for the motor records to see that an
