@@ -28,7 +28,7 @@ DLL int __stdcall HXPTCP_ConnectToServer(char *Ip_Address, int Ip_Port, double T
 DLL void __stdcall HXPTCP_SetTimeout(int SocketIndex, double Timeout); 
 DLL void __stdcall HXPTCP_CloseSocket(int SocketIndex); 
 DLL char * __stdcall HXPTCP_GetError(int SocketIndex); 
-DLL char * __stdcall HXPGetLibraryVersion(void); 
+DLL const char * __stdcall HXPGetLibraryVersion(void); 
 DLL int __stdcall HXPControllerMotionKernelTimeLoadGet (int SocketIndex, double * CPUTotalLoadRatio, double * CPUCorrectorLoadRatio, double * CPUProfilerLoadRatio, double * CPUServitudesLoadRatio);  /* Get controller motion kernel time load */
 DLL int __stdcall HXPElapsedTimeGet (int SocketIndex, double * ElapsedTime);  /* Return elapsed time from controller power on */
 DLL int __stdcall HXPErrorStringGet (int SocketIndex, int ErrorCode, char * ErrorString);  /* Return the error string corresponding to the error code */

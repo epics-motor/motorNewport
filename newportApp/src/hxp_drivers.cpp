@@ -32,7 +32,7 @@ extern "C"
 #endif
 
 
-#define DLL_VERSION "Library version for HXP Firmware V1.3.x"
+const static char * const DLL_VERSION = "Library version for HXP Firmware V1.3.x";
 
 const static char * const str_HexapodPositionCurrentGet = "HexapodPositionCurrentGet";
 const static char * const str_GroupPositionCurrentGet = "GroupPositionCurrentGet";
@@ -51,7 +51,7 @@ void ReplaceCharacter (char *strSourceInOut, char oldChar, char newChar, char st
 		pt = strchr(ptNext, startChar); 
 		if (pt != NULL) 
 		{
-			*pt++;
+			pt++;
 			while ((pt != NULL) && (*pt != endChar))
 			{
 				if (*pt == oldChar)
@@ -155,7 +155,7 @@ char * __stdcall HXPTCP_GetError(int SocketIndex)
 	return (GetError(SocketIndex));
 }
 /***********************************************************************/
-char * __stdcall HXPGetLibraryVersion(void) 
+const char * __stdcall HXPGetLibraryVersion(void) 
 {
 	return (DLL_VERSION);
 }
@@ -3626,7 +3626,7 @@ int __stdcall HXPPositionerCorrectorPIDFFAccelerationGet (int SocketIndex, char 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
 	char *ReturnedValue = (char *) malloc (sizeof(char) * SIZE_SMALL); 
-	int boolScanTmp;
+	int boolScanTmp = 0;
 
 	/* Convert to string */ 
 	sprintf (ExecuteMethod, "PositionerCorrectorPIDFFAccelerationGet (%s,bool *,double *,double *,double *,double *,double *,double *,double *,double *,double *,double *,double *)", PositionerName);
@@ -3760,7 +3760,7 @@ int __stdcall HXPPositionerCorrectorPIDFFVelocityGet (int SocketIndex, char * Po
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
 	char *ReturnedValue = (char *) malloc (sizeof(char) * SIZE_SMALL); 
-	int boolScanTmp;
+	int boolScanTmp = 0;
 
 	/* Convert to string */ 
 	sprintf (ExecuteMethod, "PositionerCorrectorPIDFFVelocityGet (%s,bool *,double *,double *,double *,double *,double *,double *,double *,double *,double *,double *,double *)", PositionerName);
@@ -3898,7 +3898,7 @@ int __stdcall HXPPositionerCorrectorPIDDualFFVoltageGet (int SocketIndex, char *
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
 	char *ReturnedValue = (char *) malloc (sizeof(char) * SIZE_SMALL); 
-	int boolScanTmp;
+	int boolScanTmp = 0;
 
 	/* Convert to string */ 
 	sprintf (ExecuteMethod, "PositionerCorrectorPIDDualFFVoltageGet (%s,bool *,double *,double *,double *,double *,double *,double *,double *,double *,double *,double *,double *,double *,double *)", PositionerName);
@@ -4022,7 +4022,7 @@ int __stdcall HXPPositionerCorrectorPIPositionGet (int SocketIndex, char * Posit
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
 	char *ReturnedValue = (char *) malloc (sizeof(char) * SIZE_SMALL); 
-	int boolScanTmp;
+	int boolScanTmp = 0;
 
 	/* Convert to string */ 
 	sprintf (ExecuteMethod, "PositionerCorrectorPIPositionGet (%s,bool *,double *,double *,double *)", PositionerName);
