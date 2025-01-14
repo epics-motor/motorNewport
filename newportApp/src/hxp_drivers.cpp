@@ -2513,7 +2513,7 @@ int __stdcall HXPGPIODigitalSet (int SocketIndex, char * GPIOName, unsigned shor
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupCorrectorOutputGet (int SocketIndex, char * GroupName, int NbElements, double CorrectorOutput[]) 
+int __stdcall HXPGroupCorrectorOutputGet (int SocketIndex, const char * GroupName, int NbElements, double CorrectorOutput[]) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2571,7 +2571,7 @@ int __stdcall HXPGroupCorrectorOutputGet (int SocketIndex, char * GroupName, int
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupHomeSearch (int SocketIndex, char * GroupName) 
+int __stdcall HXPGroupHomeSearch (int SocketIndex, const char * GroupName) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2604,7 +2604,7 @@ int __stdcall HXPGroupHomeSearch (int SocketIndex, char * GroupName)
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupHomeSearchAndRelativeMove (int SocketIndex, char * GroupName, int NbElements, double TargetDisplacement[]) 
+int __stdcall HXPGroupHomeSearchAndRelativeMove (int SocketIndex, const char * GroupName, int NbElements, double TargetDisplacement[]) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2647,7 +2647,7 @@ int __stdcall HXPGroupHomeSearchAndRelativeMove (int SocketIndex, char * GroupNa
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupInitialize (int SocketIndex, char * GroupName) 
+int __stdcall HXPGroupInitialize (int SocketIndex, const char * GroupName) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2679,7 +2679,7 @@ int __stdcall HXPGroupInitialize (int SocketIndex, char * GroupName)
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupInitializeWithEncoderCalibration (int SocketIndex, char * GroupName) 
+int __stdcall HXPGroupInitializeWithEncoderCalibration (int SocketIndex, const char * GroupName) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2711,7 +2711,7 @@ int __stdcall HXPGroupInitializeWithEncoderCalibration (int SocketIndex, char * 
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupKill (int SocketIndex, char * GroupName) 
+int __stdcall HXPGroupKill (int SocketIndex, const char * GroupName) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2743,7 +2743,7 @@ int __stdcall HXPGroupKill (int SocketIndex, char * GroupName)
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupMoveAbort (int SocketIndex, char * GroupName) 
+int __stdcall HXPGroupMoveAbort (int SocketIndex, const char * GroupName) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2776,7 +2776,7 @@ int __stdcall HXPGroupMoveAbort (int SocketIndex, char * GroupName)
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupMoveAbsolute (int SocketIndex, char * GroupName, int NbElements, double TargetPosition[]) 
+int __stdcall HXPGroupMoveAbsolute (int SocketIndex, const char * GroupName, int NbElements, double TargetPosition[]) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2820,7 +2820,7 @@ int __stdcall HXPGroupMoveAbsolute (int SocketIndex, char * GroupName, int NbEle
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupMoveRelative (int SocketIndex, char * GroupName, int NbElements, double TargetDisplacement[]) 
+int __stdcall HXPGroupMoveRelative (int SocketIndex, const char * GroupName, int NbElements, double TargetDisplacement[]) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2863,7 +2863,7 @@ int __stdcall HXPGroupMoveRelative (int SocketIndex, char * GroupName, int NbEle
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupMotionDisable (int SocketIndex, char * GroupName) 
+int __stdcall HXPGroupMotionDisable (int SocketIndex, const char * GroupName) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2895,7 +2895,7 @@ int __stdcall HXPGroupMotionDisable (int SocketIndex, char * GroupName)
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupMotionEnable (int SocketIndex, char * GroupName) 
+int __stdcall HXPGroupMotionEnable (int SocketIndex, const char * GroupName) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2931,7 +2931,7 @@ int __stdcall HXPGroupMotionEnable (int SocketIndex, char * GroupName)
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupPositionCorrectedProfilerGet (int SocketIndex, char * GroupName, double PositionX, double PositionY, double * CorrectedProfilerPositionX, double * CorrectedProfilerPositionY) 
+int __stdcall HXPGroupPositionCorrectedProfilerGet (int SocketIndex, const char * GroupName, double PositionX, double PositionY, double * CorrectedProfilerPositionX, double * CorrectedProfilerPositionY) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -2979,7 +2979,7 @@ int __stdcall HXPGroupPositionCorrectedProfilerGet (int SocketIndex, char * Grou
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupPositionCurrentGet (int SocketIndex, char * GroupName, int NbElements, double CurrentEncoderPosition[]) 
+int __stdcall HXPGroupPositionCurrentGet (int SocketIndex, const char * GroupName, int NbElements, double CurrentEncoderPosition[]) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -3039,7 +3039,7 @@ int __stdcall HXPGroupPositionCurrentGet (int SocketIndex, char * GroupName, int
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupPositionSetpointGet (int SocketIndex, char * GroupName, int NbElements, double SetPointPosition[]) 
+int __stdcall HXPGroupPositionSetpointGet (int SocketIndex, const char * GroupName, int NbElements, double SetPointPosition[]) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -3099,7 +3099,7 @@ int __stdcall HXPGroupPositionSetpointGet (int SocketIndex, char * GroupName, in
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupPositionTargetGet (int SocketIndex, char * GroupName, int NbElements, double TargetPosition[]) 
+int __stdcall HXPGroupPositionTargetGet (int SocketIndex, const char * GroupName, int NbElements, double TargetPosition[]) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -3165,7 +3165,7 @@ void __stdcall HXPSetHexapodForFirmwareXPS_D()
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPGroupStatusGet (int SocketIndex, char * GroupName, int * Status) 
+int __stdcall HXPGroupStatusGet (int SocketIndex, const char * GroupName, int * Status) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -5202,7 +5202,7 @@ int __stdcall HXPPositionerUserTravelLimitsSet (int SocketIndex, char * Position
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPHexapodMoveAbsolute (int SocketIndex, char * GroupName, char * CoordinateSystem, double X, double Y, double Z, double U, double V, double W) 
+int __stdcall HXPHexapodMoveAbsolute (int SocketIndex, const char * GroupName, const char * CoordinateSystem, double X, double Y, double Z, double U, double V, double W) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -5241,7 +5241,7 @@ int __stdcall HXPHexapodMoveAbsolute (int SocketIndex, char * GroupName, char * 
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPHexapodMoveIncremental (int SocketIndex, char * GroupName, char * CoordinateSystem, double dX, double dY, double dZ, double dU, double dV, double dW) 
+int __stdcall HXPHexapodMoveIncremental (int SocketIndex, const char * GroupName, const char * CoordinateSystem, double dX, double dY, double dZ, double dU, double dV, double dW) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -5287,7 +5287,7 @@ int __stdcall HXPHexapodMoveIncremental (int SocketIndex, char * GroupName, char
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPHexapodCoordinatesGet (int SocketIndex, char * GroupName, char * CoordinateSystemIn, char * CoordinateSystemOut, double Xin, double Yin, double Zin, double Uin, double Vin, double Win, double * Xout, double * Yout, double * Zout, double * Uout, double * Vout, double * Wout) 
+int __stdcall HXPHexapodCoordinatesGet (int SocketIndex, const char * GroupName, const char * CoordinateSystemIn, const char * CoordinateSystemOut, double Xin, double Yin, double Zin, double Uin, double Vin, double Win, double * Xout, double * Yout, double * Zout, double * Uout, double * Vout, double * Wout) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -5352,7 +5352,7 @@ int __stdcall HXPHexapodCoordinatesGet (int SocketIndex, char * GroupName, char 
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPHexapodCoordinateSystemSet (int SocketIndex, char * GroupName, char * CoordinateSystem, double X, double Y, double Z, double U, double V, double W) 
+int __stdcall HXPHexapodCoordinateSystemSet (int SocketIndex, const char * GroupName, const char * CoordinateSystem, double X, double Y, double Z, double U, double V, double W) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
@@ -5391,7 +5391,7 @@ int __stdcall HXPHexapodCoordinateSystemSet (int SocketIndex, char * GroupName, 
  *     - Return :
  *            int errorCode
  ***********************************************************************/ 
-int __stdcall HXPHexapodCoordinateSystemGet (int SocketIndex, char * GroupName, char * CoordinateSystem, double * X, double * Y, double * Z, double * U, double * V, double * W) 
+int __stdcall HXPHexapodCoordinateSystemGet (int SocketIndex, const char * GroupName, const char * CoordinateSystem, double * X, double * Y, double * Z, double * U, double * V, double * W) 
 { 
 	int ret = -1; 
 	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 

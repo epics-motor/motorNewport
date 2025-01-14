@@ -77,23 +77,23 @@ DLL int __stdcall HXPGPIOAnalogGainGet (int SocketIndex, int NbElements, char * 
 DLL int __stdcall HXPGPIOAnalogGainSet (int SocketIndex, int NbElements, char * GPIONameList, int AnalogInputGainValue[]);  /* Set analog input gain (1, 2, 4 or 8) for one or few input */
 DLL int __stdcall HXPGPIODigitalGet (int SocketIndex, char * GPIOName, unsigned short * DigitalValue);  /* Read digital output or digital input  */
 DLL int __stdcall HXPGPIODigitalSet (int SocketIndex, char * GPIOName, unsigned short Mask, unsigned short DigitalOutputValue);  /* Set Digital Output for one or few output TTL */
-DLL int __stdcall HXPGroupCorrectorOutputGet (int SocketIndex, char * GroupName, int NbElements, double CorrectorOutput[]);  /* Return corrector outputs */
-DLL int __stdcall HXPGroupHomeSearch (int SocketIndex, char * GroupName);  /* Start home search sequence */
-DLL int __stdcall HXPGroupHomeSearchAndRelativeMove (int SocketIndex, char * GroupName, int NbElements, double TargetDisplacement[]);  /* Start home search sequence and execute a displacement */
-DLL int __stdcall HXPGroupInitialize (int SocketIndex, char * GroupName);  /* Start the initialization */
-DLL int __stdcall HXPGroupInitializeWithEncoderCalibration (int SocketIndex, char * GroupName);  /* Start the initialization with encoder calibration */
-DLL int __stdcall HXPGroupKill (int SocketIndex, char * GroupName);  /* Kill the group */
-DLL int __stdcall HXPGroupMoveAbort (int SocketIndex, char * GroupName);  /* Abort a move */
-DLL int __stdcall HXPGroupMoveAbsolute (int SocketIndex, char * GroupName, int NbElements, double TargetPosition[]);  /* Do an absolute move */
-DLL int __stdcall HXPGroupMoveRelative (int SocketIndex, char * GroupName, int NbElements, double TargetDisplacement[]);  /* Do a relative move */
-DLL int __stdcall HXPGroupMotionDisable (int SocketIndex, char * GroupName);  /* Set Motion disable on selected group */
-DLL int __stdcall HXPGroupMotionEnable (int SocketIndex, char * GroupName);  /* Set Motion enable on selected group */
-DLL int __stdcall HXPGroupPositionCorrectedProfilerGet (int SocketIndex, char * GroupName, double PositionX, double PositionY, double * CorrectedProfilerPositionX, double * CorrectedProfilerPositionY);  /* Return corrected profiler positions */
-DLL int __stdcall HXPGroupPositionCurrentGet (int SocketIndex, char * GroupName, int NbElements, double CurrentEncoderPosition[]);  /* Return current positions */
-DLL int __stdcall HXPGroupPositionSetpointGet (int SocketIndex, char * GroupName, int NbElements, double SetPointPosition[]);  /* Return setpoint positions */
-DLL int __stdcall HXPGroupPositionTargetGet (int SocketIndex, char * GroupName, int NbElements, double TargetPosition[]);  /* Return target positions */
+DLL int __stdcall HXPGroupCorrectorOutputGet (int SocketIndex, const char * GroupName, int NbElements, double CorrectorOutput[]);  /* Return corrector outputs */
+DLL int __stdcall HXPGroupHomeSearch (int SocketIndex, const char * GroupName);  /* Start home search sequence */
+DLL int __stdcall HXPGroupHomeSearchAndRelativeMove (int SocketIndex, const char * GroupName, int NbElements, double TargetDisplacement[]);  /* Start home search sequence and execute a displacement */
+DLL int __stdcall HXPGroupInitialize (int SocketIndex, const char * GroupName);  /* Start the initialization */
+DLL int __stdcall HXPGroupInitializeWithEncoderCalibration (int SocketIndex, const char * GroupName);  /* Start the initialization with encoder calibration */
+DLL int __stdcall HXPGroupKill (int SocketIndex, const char * GroupName);  /* Kill the group */
+DLL int __stdcall HXPGroupMoveAbort (int SocketIndex, const char * GroupName);  /* Abort a move */
+DLL int __stdcall HXPGroupMoveAbsolute (int SocketIndex, const char * GroupName, int NbElements, double TargetPosition[]);  /* Do an absolute move */
+DLL int __stdcall HXPGroupMoveRelative (int SocketIndex, const char * GroupName, int NbElements, double TargetDisplacement[]);  /* Do a relative move */
+DLL int __stdcall HXPGroupMotionDisable (int SocketIndex, const char * GroupName);  /* Set Motion disable on selected group */
+DLL int __stdcall HXPGroupMotionEnable (int SocketIndex, const char * GroupName);  /* Set Motion enable on selected group */
+DLL int __stdcall HXPGroupPositionCorrectedProfilerGet (int SocketIndex, const char * GroupName, double PositionX, double PositionY, double * CorrectedProfilerPositionX, double * CorrectedProfilerPositionY);  /* Return corrected profiler positions */
+DLL int __stdcall HXPGroupPositionCurrentGet (int SocketIndex, const char * GroupName, int NbElements, double CurrentEncoderPosition[]);  /* Return current positions */
+DLL int __stdcall HXPGroupPositionSetpointGet (int SocketIndex, const char * GroupName, int NbElements, double SetPointPosition[]);  /* Return setpoint positions */
+DLL int __stdcall HXPGroupPositionTargetGet (int SocketIndex, const char * GroupName, int NbElements, double TargetPosition[]);  /* Return target positions */
 DLL void __stdcall HXPSetHexapodForFirmwareXPS_D ();
-DLL int __stdcall HXPGroupStatusGet (int SocketIndex, char * GroupName, int * Status);  /* Return group status */
+DLL int __stdcall HXPGroupStatusGet (int SocketIndex, const char * GroupName, int * Status);  /* Return group status */
 DLL int __stdcall HXPGroupStatusStringGet (int SocketIndex, int GroupStatusCode, char * GroupStatusString);  /* Return the group status string corresponding to the group status code */
 DLL int __stdcall HXPKillAll (int SocketIndex);  /* Put all groups in 'Not initialized' state */
 DLL int __stdcall HXPRestartApplication (int SocketIndex);  /* Restart the Controller */
@@ -136,11 +136,11 @@ DLL int __stdcall HXPPositionerStageParameterGet (int SocketIndex, char * Positi
 DLL int __stdcall HXPPositionerStageParameterSet (int SocketIndex, char * PositionerName, char * ParameterName, char * ParameterValue);  /* Save the stage parameter */
 DLL int __stdcall HXPPositionerUserTravelLimitsGet (int SocketIndex, char * PositionerName, double * UserMinimumTarget, double * UserMaximumTarget);  /* Read UserMinimumTarget and UserMaximumTarget */
 DLL int __stdcall HXPPositionerUserTravelLimitsSet (int SocketIndex, char * PositionerName, double UserMinimumTarget, double UserMaximumTarget);  /* Update UserMinimumTarget and UserMaximumTarget */
-DLL int __stdcall HXPHexapodMoveAbsolute (int SocketIndex, char * GroupName, char * CoordinateSystem, double X, double Y, double Z, double U, double V, double W);  /* Hexapod absolute move in a specific coordinate system */
-DLL int __stdcall HXPHexapodMoveIncremental (int SocketIndex, char * GroupName, char * CoordinateSystem, double dX, double dY, double dZ, double dU, double dV, double dW);  /* Hexapod incremental move in a specific coordinate system */
-DLL int __stdcall HXPHexapodCoordinatesGet (int SocketIndex, char * GroupName, char * CoordinateSystemIn, char * CoordinateSystemOut, double Xin, double Yin, double Zin, double Uin, double Vin, double Win, double * Xout, double * Yout, double * Zout, double * Uout, double * Vout, double * Wout);  /* Get coordinates in a specific coordinate system of a point specified in another coordinate system */
-DLL int __stdcall HXPHexapodCoordinateSystemSet (int SocketIndex, char * GroupName, char * CoordinateSystem, double X, double Y, double Z, double U, double V, double W);  /* Modify the position of a coordinate system */
-DLL int __stdcall HXPHexapodCoordinateSystemGet (int SocketIndex, char * GroupName, char * CoordinateSystem, double * X, double * Y, double * Z, double * U, double * V, double * W);  /* Get the position of a coordinate system */
+DLL int __stdcall HXPHexapodMoveAbsolute (int SocketIndex, const char * GroupName, const char * CoordinateSystem, double X, double Y, double Z, double U, double V, double W);  /* Hexapod absolute move in a specific coordinate system */
+DLL int __stdcall HXPHexapodMoveIncremental (int SocketIndex, const char * GroupName, const char * CoordinateSystem, double dX, double dY, double dZ, double dU, double dV, double dW);  /* Hexapod incremental move in a specific coordinate system */
+DLL int __stdcall HXPHexapodCoordinatesGet (int SocketIndex, const char * GroupName, const char * CoordinateSystemIn, const char * CoordinateSystemOut, double Xin, double Yin, double Zin, double Uin, double Vin, double Win, double * Xout, double * Yout, double * Zout, double * Uout, double * Vout, double * Wout);  /* Get coordinates in a specific coordinate system of a point specified in another coordinate system */
+DLL int __stdcall HXPHexapodCoordinateSystemSet (int SocketIndex, const char * GroupName, const char * CoordinateSystem, double X, double Y, double Z, double U, double V, double W);  /* Modify the position of a coordinate system */
+DLL int __stdcall HXPHexapodCoordinateSystemGet (int SocketIndex, const char * GroupName, const char * CoordinateSystem, double * X, double * Y, double * Z, double * U, double * V, double * W);  /* Get the position of a coordinate system */
 DLL int __stdcall HXPOptionalModuleExecute (int SocketIndex, char * ModuleFileName, char * TaskName);  /* Execute an optional module */
 DLL int __stdcall HXPOptionalModuleKill (int SocketIndex, char * TaskName);  /* Kill an optional module */
 DLL int __stdcall HXPControllerStatusGet (int SocketIndex, int * ControllerStatus);  /* Read controller current status */
