@@ -371,19 +371,29 @@ void HXPController::postError(HXPAxis *pAxis, int status)
   * \param[out] moving A flag that is set indicating that the axis is moving (true) or done (false). */
 asynStatus HXPController::poll()
 { 
-  int status;
+  int status = 0;
   //char readResponse[25];
 
   static const char *functionName = "HXPController::poll";
 
   if (!firmwareVersion_[0]) {
-    HXPFirmwareVersionGet(pollSocket_, firmwareVersion_);
-    if (strstr(firmwareVersion_, "HXP-D ")) {
-      HXPSetHexapodForFirmwareXPS_D();
+    if (!HXPFirmwareVersionGet(pollSocket_, firmwareVersion_)) {
+      if (strstr(firmwareVersion_, "HXP-D ")) {
+        HXPSetHexapodForFirmwareXPS_D();
+      }
+    } else {
+      memset(firmwareVersion_, 0, sizeof(firmwareVersion_));
+      status = 1;
     }
+    if (status) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s: [%s]: error calling HXPFirmwareVersionGe status=%d; pollSocket=%d\n",
+                driverName, functionName, portName, status, pollSocket_);
+      goto done;
+    }
+
   }
 
-  
   status = HXPGroupStatusGet(pollSocket_, 
                           GROUP, 
                           &groupStatus_);
