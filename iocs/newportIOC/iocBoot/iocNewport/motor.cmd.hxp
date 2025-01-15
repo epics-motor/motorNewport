@@ -9,5 +9,15 @@ HXPCreateController("HXP1", "192.168.0.254", 5001, 200, 1000)
 # external move has been initiated.
 #!HXPCreateController("HXP1", "192.168.1.42", 5001, 200, 200)
 
-#asynSetTraceIOMask("HXP1", 0, 2)
-#asynSetTraceMask("HXP1", 0, 255)
+asynSetTraceIOMask("HXP1", 0, 2)
+
+
+#/* traceMask definitions*/
+#define ASYN_TRACE_ERROR     0x0001
+#define ASYN_TRACEIO_DEVICE  0x0002
+#define ASYN_TRACEIO_FILTER  0x0004
+#define ASYN_TRACEIO_DRIVER  0x0008
+#define ASYN_TRACE_FLOW      0x0010
+#define ASYN_TRACE_WARNING   0x0020
+#define ASYN_TRACE_INFO      0x0040
+asynSetTraceMask("HXP1", -1, 0x41)

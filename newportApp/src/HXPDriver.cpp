@@ -22,6 +22,9 @@ Note: This driver was tested with the v1.3.x of the firmware
 #include "asynMotorAxis.h"
 
 #include <epicsExport.h>
+#ifndef ASYN_TRACE_INFO
+#define ASYN_TRACE_INFO 0x0040
+#endif
 #include "hxp_drivers.h"
 #include "HXPDriver.h"
 
@@ -378,6 +381,9 @@ asynStatus HXPController::poll()
 
   if (!firmwareVersion_[0]) {
     if (!HXPFirmwareVersionGet(pollSocket_, firmwareVersion_)) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_INFO,
+                "%s:%s: [%s]: HXPFirmwareVersionGet='%s' pollSocket=%d\n",
+                driverName, functionName, portName, firmwareVersion_, pollSocket_);
       if (strstr(firmwareVersion_, "HXP-D ")) {
         HXPSetHexapodForFirmwareXPS_D();
       }
@@ -387,7 +393,7 @@ asynStatus HXPController::poll()
     }
     if (status) {
       asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s: [%s]: error calling HXPFirmwareVersionGe status=%d; pollSocket=%d\n",
+                "%s:%s: [%s]: error calling HXPFirmwareVersionGet status=%d; pollSocket=%d\n",
                 driverName, functionName, portName, status, pollSocket_);
       goto done;
     }
