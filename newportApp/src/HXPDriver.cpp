@@ -388,6 +388,9 @@ asynStatus HXPController::poll()
                 driverName, functionName, portName, firmwareVersion_, pollSocket_);
       if (strstr(firmwareVersion_, "HXP-D ")) {
         HXPSetHexapodForFirmwareXPS_D();
+      } else if (!strstr(firmwareVersion_, "HXP")) {
+        /* crap from socket ? */
+        memset(firmwareVersion_, 0, sizeof(firmwareVersion_));
       }
     } else {
       memset(firmwareVersion_, 0, sizeof(firmwareVersion_));
