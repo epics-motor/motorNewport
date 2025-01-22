@@ -394,7 +394,7 @@ asynStatus HXPController::poll()
       status = 1;
     }
     if (status) {
-      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+      asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
                 "%s:%s: [%s]: error calling HXPFirmwareVersionGet status=%d; pollSocket=%d\n",
                 driverName, functionName, portName, status, pollSocket_);
       goto done;
