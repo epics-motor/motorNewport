@@ -375,15 +375,17 @@ void HXPController::postError(HXPAxis *pAxis, int status)
   * \param[out] moving A flag that is set indicating that the axis is moving (true) or done (false). */
 asynStatus HXPController::poll()
 { 
-  int status = 0;
+  int status = 1;
   int polled_motorStatusProblem = 0;
   int polled_motorStatusPowerOn = 0;
+  int polled_motorStatusHome = 0;
   //char readResponse[25];
 
   static const char *functionName = "HXPController::poll";
 
   if (!firmwareVersion_[0]) {
-    if (!HXPFirmwareVersionGet(pollSocket_, firmwareVersion_)) {
+    status = HXPFirmwareVersionGet(pollSocket_, firmwareVersion_);
+    if (!status) {
       asynPrint(pasynUserSelf, ASYN_TRACE_INFO,
                 "%s:%s: [%s]: HXPFirmwareVersionGet='%s' pollSocket=%d\n",
                 driverName, functionName, portName, firmwareVersion_, pollSocket_);
@@ -436,9 +438,11 @@ asynStatus HXPController::poll()
       polled_motorStatusProblem = 1;
     } else if (groupStatus_ < 20) {
       ; /* polled_motorStatusProblem = 0; done above */
+      polled_motorStatusHome = 1;
     } else if (groupStatus_ < 40) {
       /* polled_motorStatusProblem = 0; done above */
       polled_motorStatusPowerOn = 0;  /* all good, DISABLE */
+      polled_motorStatusHome = 1;
     } else if (groupStatus_ <= 41) {
       polled_motorStatusProblem = 1; /* 40=Emergency breaking.
                                         41 = Motor init; */
@@ -447,6 +451,7 @@ asynStatus HXPController::poll()
       moving_ = true;                /* 43 = homing */
     } else if (groupStatus_ <= 48) {
       moving_ = true;                /* 44 = moving */
+      polled_motorStatusHome = 1;
     } else {
       polled_motorStatusProblem = 1; /* 49 = encoder calib */
       /* assume problem */
@@ -514,6 +519,7 @@ asynStatus HXPController::poll()
                                (status || polled_motorStatusProblem)? 1:0);
         pAxis->setIntegerParam(motorStatusDone_, moving_?0:1);
         pAxis->setIntegerParam(motorStatusPowerOn_, polled_motorStatusPowerOn);
+        pAxis->setIntegerParam(motorStatusHome_, polled_motorStatusHome);
       }
     }
   }
