@@ -148,6 +148,7 @@ private:
   // only needed for profile moves
   //int moveSocket_;
   char firmwareVersion_[100];
+  bool is_firmware_hxpd_;
   char *axisNames_;
   int groupStatus_;
   double encoderPosition_[MAX_HXP_AXES];

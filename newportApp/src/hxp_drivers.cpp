@@ -3150,9 +3150,12 @@ int __stdcall HXPGroupPositionTargetGet (int SocketIndex, const char * GroupName
 /*********************************************************************** 
  * SetHexapodForFirmwareXPS_D
  ***********************************************************************/ 
-void __stdcall HXPSetHexapodForFirmwareXPS_D()
+void __stdcall HXPSetHexapodForFirmwareXPS_D(bool is_fw_hxpd)
 {
-     str_XPositionCurrentGet = str_HexapodPositionCurrentGet;
+  if (is_fw_hxpd)
+    str_XPositionCurrentGet = str_HexapodPositionCurrentGet;
+  else
+    str_XPositionCurrentGet = str_GroupPositionCurrentGet;
 }
 
 /*********************************************************************** 

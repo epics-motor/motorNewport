@@ -60,6 +60,7 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
   IPAddress_ = epicsStrDup(IPAddress);
   IPPort_ = IPPort;
   memset (firmwareVersion_, 0, sizeof(firmwareVersion_));
+  is_firmware_hxpd_ = false;
 
   createParam(HXPMoveCoordSysString,          asynParamInt32,   &HXPMoveCoordSys_);
   createParam(HXPStatusString,                asynParamInt32,   &HXPStatus_);
@@ -386,11 +387,17 @@ asynStatus HXPController::poll()
       asynPrint(pasynUserSelf, ASYN_TRACE_INFO,
                 "%s:%s: [%s]: HXPFirmwareVersionGet='%s' pollSocket=%d\n",
                 driverName, functionName, portName, firmwareVersion_, pollSocket_);
-      if (strstr(firmwareVersion_, "HXP-D ")) {
-        HXPSetHexapodForFirmwareXPS_D();
-      } else if (!strstr(firmwareVersion_, "HXP")) {
+      if (!strstr(firmwareVersion_, "HXP")) {
         /* crap from socket ? */
         memset(firmwareVersion_, 0, sizeof(firmwareVersion_));
+      } else {
+        if (strstr(firmwareVersion_, "HXP-D ")) {
+          is_firmware_hxpd_ = true;
+          HXPSetHexapodForFirmwareXPS_D(is_firmware_hxpd_);
+        } else {
+          is_firmware_hxpd_ = false;
+          HXPSetHexapodForFirmwareXPS_D(is_firmware_hxpd_);
+        }
       }
     } else {
       memset(firmwareVersion_, 0, sizeof(firmwareVersion_));
@@ -421,38 +428,60 @@ asynStatus HXPController::poll()
   /* Set the status */
   setIntegerParam(HXPStatus_, groupStatus_);
 
-  /* If the group is not moving then the axis is not moving */
-  if ((groupStatus_ < 43) || (groupStatus_ > 48))
-    moving_ = false;
-  else
-    moving_ = true;
-
-  /*Test for states that mean we cannot move an axis (disabled, uninitialised, etc.) 
-    and set problem bit in MSTA.*/
-  if ((groupStatus_ < 10) || ((groupStatus_ >= 20) && (groupStatus_ <= 42)) ||
-      (groupStatus_ == 50) || (groupStatus_ == 64)) 
-  {
-    /* Don't consider a normal disabled status to be a problem */
-    if ( groupStatus_==20 ) 
+  if (is_firmware_hxpd_) {
+    /* try a different kind of logic */
+    polled_motorStatusPowerOn = 1; /* power is always on, I think */
+    moving_ = false; /* until we find out otherwise */
+    if (groupStatus_ < 10) {
+      polled_motorStatusProblem = 1;
+    } else if (groupStatus_ < 20) {
+      ; /* polled_motorStatusProblem = 0; done above */
+    } else if (groupStatus_ < 40) {
+      /* polled_motorStatusProblem = 0; done above */
+      polled_motorStatusPowerOn = 0;  /* all good, DISABLE */
+    } else if (groupStatus_ <= 41) {
+      polled_motorStatusProblem = 1; /* 40=Emergency breaking.
+                                        41 = Motor init; */
+    } else if (groupStatus_ <= 43) {
+      polled_motorStatusProblem = 1; /* 42 = notref */
+      moving_ = true;                /* 43 = homing */
+    } else if (groupStatus_ <= 48) {
+      moving_ = true;                /* 44 = moving */
+    } else {
+      polled_motorStatusProblem = 1; /* 49 = encoder calib */
+      /* assume problem */
+    }
+  } else {
+    /* If the group is not moving then the axis is not moving */
+    if ((groupStatus_ < 43) || (groupStatus_ > 48))
+      moving_ = false;
+    else
+      moving_ = true;
+    /*Test for states that mean we cannot move an axis (disabled, uninitialised, etc.)
+      and set problem bit in MSTA.*/
+    if ((groupStatus_ < 10) || ((groupStatus_ >= 20) && (groupStatus_ <= 42)) ||
+        (groupStatus_ == 50) || (groupStatus_ == 64))
+    {
+        /* Don't consider a normal disabled status to be a problem */
+      if ( groupStatus_==20 )
+      {
+        polled_motorStatusProblem = 0;
+      }
+      else
+      {
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                  "%s:%s: [%s]: in unintialised/disabled/not referenced. XPS State Code: %d\n",
+                  driverName, functionName, portName, groupStatus_);
+        polled_motorStatusProblem = 1;
+      }
+    }
+    else
     {
       polled_motorStatusProblem = 0;
+      polled_motorStatusPowerOn = 1;
     }
-    else 
-    {
-      asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-          "%s:%s: [%s]: in unintialised/disabled/not referenced. XPS State Code: %d\n",
-          driverName, functionName, portName, groupStatus_);
-      polled_motorStatusProblem = 1;
-    }
-    
-    /* Group status indicates power is off */
-    polled_motorStatusPowerOn = 0;
   }
-  else
-  {
-    polled_motorStatusProblem = 0;
-    polled_motorStatusPowerOn = 1;
-  }
+
 
   status = HXPGroupPositionCurrentGet(pollSocket_,
                                    GROUP,
