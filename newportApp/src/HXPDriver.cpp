@@ -446,8 +446,9 @@ asynStatus HXPController::poll()
     } else if (groupStatus_ <= 41) {
       polled_motorStatusProblem = 1; /* 40=Emergency breaking.
                                         41 = Motor init; */
-    } else if (groupStatus_ <= 43) {
+    } else if (groupStatus_ == 42) {
       polled_motorStatusProblem = 1; /* 42 = notref */
+    } else if (groupStatus_ == 43) {
       moving_ = true;                /* 43 = homing */
     } else if (groupStatus_ <= 48) {
       moving_ = true;                /* 44 = moving */
