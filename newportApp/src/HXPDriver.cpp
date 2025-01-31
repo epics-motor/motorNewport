@@ -60,6 +60,8 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
   IPAddress_ = epicsStrDup(IPAddress);
   IPPort_ = IPPort;
   memset (firmwareVersion_, 0, sizeof(firmwareVersion_));
+  memset(encoderPosition_, 0, sizeof(encoderPosition_));
+  memset(setpointPosition_, 0, sizeof(setpointPosition_));
   is_firmware_hxpd_ = false;
 
   createParam(HXPMoveCoordSysString,          asynParamInt32,   &HXPMoveCoordSys_);
@@ -378,7 +380,7 @@ asynStatus HXPController::poll()
   int status = 1;
   int polled_motorStatusProblem = 0;
   int polled_motorStatusPowerOn = 0;
-  int polled_motorStatusHome = 0;
+  int polled_motorStatusHomed = 0;
   //char readResponse[25];
 
   static const char *functionName = "HXPController::poll";
@@ -438,11 +440,11 @@ asynStatus HXPController::poll()
       polled_motorStatusProblem = 1;
     } else if (groupStatus_ < 20) {
       ; /* polled_motorStatusProblem = 0; done above */
-      polled_motorStatusHome = 1;
+      polled_motorStatusHomed = 1;
     } else if (groupStatus_ < 40) {
       /* polled_motorStatusProblem = 0; done above */
       polled_motorStatusPowerOn = 0;  /* all good, DISABLE */
-      polled_motorStatusHome = 1;
+      polled_motorStatusHomed = 1;
     } else if (groupStatus_ <= 41) {
       polled_motorStatusProblem = 1; /* 40=Emergency breaking.
                                         41 = Motor init; */
@@ -452,7 +454,7 @@ asynStatus HXPController::poll()
       moving_ = true;                /* 43 = homing */
     } else if (groupStatus_ <= 48) {
       moving_ = true;                /* 44 = moving */
-      polled_motorStatusHome = 1;
+      polled_motorStatusHomed = 1;
     } else {
       polled_motorStatusProblem = 1; /* 49 = encoder calib */
       /* assume problem */
@@ -513,6 +515,11 @@ asynStatus HXPController::poll()
 
   done:
   {
+    asynPrint(pasynUserSelf, ASYN_TRACE_INFO,
+              "%s:%s: [%s]: status=%d polled_motorStatusHomed=%d polled_motorStatusProblem=%d\n",
+              driverName, functionName, portName,
+              status, polled_motorStatusHomed, polled_motorStatusProblem);
+
     for (int axisNo=0; axisNo<NUM_AXES; axisNo++) {
       HXPAxis* pAxis = getAxis(axisNo);
       if (pAxis) {
@@ -522,7 +529,7 @@ asynStatus HXPController::poll()
         pAxis->setIntegerParam(motorStatusCommsError_, !!status);
         pAxis->setIntegerParam(motorStatusDone_, moving_?0:1);
         pAxis->setIntegerParam(motorStatusPowerOn_, polled_motorStatusPowerOn);
-        pAxis->setIntegerParam(motorStatusHome_, polled_motorStatusHome);
+        pAxis->setIntegerParam(motorStatusHome_, polled_motorStatusHomed);
       }
     }
   }
