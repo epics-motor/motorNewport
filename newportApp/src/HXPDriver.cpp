@@ -516,8 +516,10 @@ asynStatus HXPController::poll()
     for (int axisNo=0; axisNo<NUM_AXES; axisNo++) {
       HXPAxis* pAxis = getAxis(axisNo);
       if (pAxis) {
+        /* !! is short for status ? 1 : 0 */
         pAxis->setIntegerParam(motorStatusProblem_,
                                (status || polled_motorStatusProblem)? 1:0);
+        pAxis->setIntegerParam(motorStatusCommsError_, !!status);
         pAxis->setIntegerParam(motorStatusDone_, moving_?0:1);
         pAxis->setIntegerParam(motorStatusPowerOn_, polled_motorStatusPowerOn);
         pAxis->setIntegerParam(motorStatusHome_, polled_motorStatusHome);
