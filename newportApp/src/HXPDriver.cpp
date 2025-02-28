@@ -52,7 +52,6 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
                          0, 0)  // Default priority and stack size
 {
   int axis;
-  HXPAxis *pAxis;
   static const char *functionName = "HXPController::HXPController";
 
   axisNames_ = epicsStrDup("XYZUVW");
@@ -111,7 +110,7 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
   }
   
   for (axis=0; axis<NUM_AXES; axis++) {
-    pAxis = new HXPAxis(this, axis);
+    new HXPAxis(this, axis);
   }
 
   startPoller(movingPollPeriod, idlePollPeriod, 2);
@@ -130,9 +129,7 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
 extern "C" int HXPCreateController(const char *portName, const char *IPAddress, int IPPort,
                                    int movingPollPeriod, int idlePollPeriod)
 {
-  HXPController *pHXPController
-    = new HXPController(portName, IPAddress, IPPort, movingPollPeriod/1000., idlePollPeriod/1000.);
-  pHXPController = NULL;
+  new HXPController(portName, IPAddress, IPPort, movingPollPeriod/1000., idlePollPeriod/1000.);
   return(asynSuccess);
 }
 
@@ -552,7 +549,9 @@ HXPAxis::HXPAxis(HXPController *pC, int axisNo)
     pC_(pC)
 {  
   axisName_ = pC_->axisNames_[axisNo];
-  sprintf(positionerName_, "%s.%c", GROUP, (char) axisName_);
+  memset(positionerName_, 0, sizeof(positionerName_));
+  snprintf(positionerName_, sizeof(positionerName_) -1,
+           "%s.%c", GROUP, (char) axisName_);
 
   // Couldn't a negative timeout be used here instead?
   moveSocket_ = HXPTCP_ConnectToServer(pC_->IPAddress_, pC->IPPort_, HXP_POLL_TIMEOUT);
@@ -703,11 +702,9 @@ asynStatus HXPAxis::home(double baseVelocity, double slewVelocity, double accele
 
 asynStatus HXPAxis::stop(double acceleration )
 {
-  int status;
   //static const char *functionName = "HXPAxis::stop";
 
-  status = HXPGroupMoveAbort(moveSocket_, GROUP);
-
+  (void)HXPGroupMoveAbort(moveSocket_, GROUP);
   return asynSuccess;
 }
 
