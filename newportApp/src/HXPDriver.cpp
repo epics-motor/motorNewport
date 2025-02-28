@@ -526,7 +526,7 @@ asynStatus HXPController::poll()
         pAxis->setIntegerParam(motorStatusCommsError_, !!status);
         pAxis->setIntegerParam(motorStatusDone_, moving_?0:1);
         pAxis->setIntegerParam(motorStatusPowerOn_, polled_motorStatusPowerOn);
-        pAxis->setIntegerParam(motorStatusHome_, polled_motorStatusHomed);
+        pAxis->setIntegerParam(motorStatusHomed_, polled_motorStatusHomed);
       }
     }
   }
