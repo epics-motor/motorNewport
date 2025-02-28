@@ -512,10 +512,12 @@ asynStatus HXPController::poll()
 
   done:
   {
-    asynPrint(pasynUserSelf, ASYN_TRACE_INFO,
-              "%s:%s: [%s]: status=%d polled_motorStatusHomed=%d polled_motorStatusProblem=%d\n",
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s:%s: [%s]: status=%d HXPD=%d homed=%d problem=%d groupStatus=%d\n",
               driverName, functionName, portName,
-              status, polled_motorStatusHomed, polled_motorStatusProblem);
+              status, is_firmware_hxpd_,
+              polled_motorStatusHomed, polled_motorStatusProblem,
+              groupStatus_);
 
     for (int axisNo=0; axisNo<NUM_AXES; axisNo++) {
       HXPAxis* pAxis = getAxis(axisNo);
