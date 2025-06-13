@@ -2,7 +2,7 @@ MODULES="sncseq ipac asyn autosave busy motor"
 
 SNCSEQ=R2-2-9
 IPAC=master
-ASYN=R4-42
+ASYN=master
 AUTOSAVE=R5-10-2
 BUSY=R1-7-3
 MOTOR=master
