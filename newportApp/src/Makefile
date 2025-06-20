@@ -54,6 +54,7 @@ Newport_SRCS += SMC100Driver.cpp
 # Agilis device drivers
 Newport_SRCS += AG_UC.cpp
 Newport_SRCS += AG_CONEX.cpp
+Newport_SRCS += AGAP_CONEX.cpp
 
 # XPS C8 device driver
 Newport_SRCS += asynOctetSocket.cpp 
