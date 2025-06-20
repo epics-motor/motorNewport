@@ -30,9 +30,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 33
+x 28
 y 56
-w 100
+w 110
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -50,9 +50,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 38
+x 62
 y 40
-w 100
+w 52
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -70,9 +70,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 282
+x 310
 y 5
-w 286
+w 229
 h 26
 font "helvetica-medium-r-18.0"
 fontAlign "center"
@@ -114,9 +114,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 215
+x 240
 y 56
-w 100
+w 51
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -124,7 +124,7 @@ fgColor rgb 2560 0 47104
 bgColor index 3
 useDisplayBg
 value {
-  "Enable"
+  "Mode"
 }
 endObjectProperties
 
@@ -389,48 +389,15 @@ newPos
 objType "controls"
 endObjectProperties
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 350
-y 40
-w 520
-h 36
-
-beginGroup
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
 release 1
-x 350
+x 360
 y 56
-w 100
-h 20
-font "helvetica-medium-r-14.0"
-fontAlign "center"
-fgColor rgb 2560 0 47104
-bgColor index 3
-useDisplayBg
-value {
-  "Mode"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 455
-y 56
-w 100
+w 80
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -448,9 +415,29 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 560
+x 465
 y 56
-w 100
+w 80
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "center"
+fgColor rgb 2560 0 47104
+bgColor index 3
+useDisplayBg
+value {
+  "Position"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 590
+y 56
+w 41
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -468,9 +455,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 350
+x 365
 y 40
-w 100
+w 71
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -488,9 +475,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 455
+x 468
 y 40
-w 100
+w 75
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -508,9 +495,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 560
+x 589
 y 40
-w 100
+w 43
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -548,9 +535,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 665
+x 690
 y 40
-w 100
+w 50
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -568,9 +555,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 770
+x 775
 y 56
-w 100
+w 90
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -588,9 +575,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 770
+x 780
 y 40
-w 100
+w 80
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "center"
@@ -601,11 +588,6 @@ value {
   "Settling"
 }
 endObjectProperties
-
-endGroup
-
-endObjectProperties
-
 
 # (Menu Button)
 object activeMenuButtonClass
@@ -666,21 +648,4 @@ controlPv "$(P)$(M1)PositionCompareSettlingTime"
 indicatorPv "$(P)$(M1)PositionCompareSettlingTime"
 font "helvetica-medium-r-12.0"
 endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 350
-y 40
-w 520
-h 36
-
-beginGroup
-
-endGroup
-
-endObjectProperties
-
 
