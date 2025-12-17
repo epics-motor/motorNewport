@@ -145,7 +145,7 @@ void SendAndReceive (int SocketIndex, char buffer[], char valueRtrn[], int retur
         strcpy(valueRtrn,"-22");
         return;
     }
-
+    valueRtrn[0] = '\0'; /* initialize buffer, just in case */
     epicsMutexMustLock(psock->mutexId);
     /* If timeout > 0. then we do a write read.  If < 0. then write. */
 
@@ -178,8 +178,8 @@ void SendAndReceive (int SocketIndex, char buffer[], char valueRtrn[], int retur
                                             &nbytesIn,
                                             &eomReason);
             asynPrint(psock->pasynUser, ASYN_TRACEIO_DRIVER,
-                  "SendAndReceive, received: nread=%d, returnSize-nread=%d, nbytesIn=%d\n",
-                  (int)nread, returnSize-nread, (int)nbytesIn);
+                  "SendAndReceive, received: nread=%d, returnSize-nread=%ld, nbytesIn=%ld\n",
+                      (int)nread, (long)(returnSize-nread), (long)nbytesIn);
             nread += nbytesIn;
         }
     } else {
@@ -259,8 +259,8 @@ int ReadXPSSocket (int SocketIndex, char valueRtrn[], int returnSize, double tim
                                         &nbytesIn,
                                         &eomReason);
         asynPrint(psock->pasynUser, ASYN_TRACEIO_DRIVER,
-              "ReadXPSSocket, received: nread=%d, returnSize-nread=%d, nbytesIn=%d\n",
-              (int)nread, returnSize-nread, (int)nbytesIn);
+              "ReadXPSSocket, received: nread=%d, returnSize-nread=%ld, nbytesIn=%ld\n",
+              (int)nread, (long)(returnSize-nread), (long)nbytesIn);
         nread += nbytesIn;
     } while ((status==asynSuccess) && 
              (strcmp(valueRtrn + nread - strlen(XPS_TERMINATOR), XPS_TERMINATOR) != 0));

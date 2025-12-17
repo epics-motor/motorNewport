@@ -75,8 +75,6 @@ private:
   char errorDescFull_[1024];
   double encoderPosition_;
   double setpointPosition_;
-  int axisStatus_;
-  double mres_;
   bool moving_;
   
 friend class HXPController;
@@ -150,6 +148,7 @@ private:
   // only needed for profile moves
   //int moveSocket_;
   char firmwareVersion_[100];
+  bool is_firmware_hxpd_;
   char *axisNames_;
   int groupStatus_;
   double encoderPosition_[MAX_HXP_AXES];
