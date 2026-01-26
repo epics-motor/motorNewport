@@ -103,11 +103,17 @@ XPSGatheringMain_LIBS += $(EPICS_BASE_IOC_LIBS)
 PROD_IOC += XPSGathering2
 XPSGathering2_SRCS += XPSGathering2.c
 XPSGathering2_LIBS += Newport motor asyn
+ifdef SNCSEQ
+XPSGathering2_LIBS += seq pv
+endif
 XPSGathering2_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 PROD_IOC += testSFTPUpload
 testSFTPUpload_SRCS += testSFTPUpload.cpp
-testSFTPUpload_LIBS += Newport asyn $(EPICS_BASE_IOC_LIBS)
+ifdef SNCSEQ
+testSFTPUpload_LIBS += seq pv
+endif
+testSFTPUpload_LIBS += Newport motor asyn $(EPICS_BASE_IOC_LIBS)
 
 ifeq ("$(HAVE_LIBCURL)", "YES")
   PROD_IOC += curl_gen
