@@ -17,7 +17,7 @@ R1-3 is a release based on the master branch.
 * Pull request [#30](https://github.com/epics-motor/motorNewport/pull/30): Fixed a CAPS_LOCK typo in XPSPositionCompare_settings.req
 * Pull request [#32](https://github.com/epics-motor/motorNewport/pull/32): Fixed XPSGathering2 and testSFTPUpload failing to cross compile for linux-arm
 * Pull request [#24](https://github.com/epics-motor/motorNewport/pull/24): [Torsten Bögershausen](https://github.com/tboegi) added calc to the example IOC
-* Pull request [#34](https://github.com/epics-motor/motorNewport/pull/34): Conditionally include optional support in the exmaple IOC
+* Pull request [#34](https://github.com/epics-motor/motorNewport/pull/34): Conditionally include optional support in the example IOC
 
 #### Documentation
 * None
