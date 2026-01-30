@@ -1,5 +1,31 @@
 # motorNewport Releases
 
+## __R1-3 (2026-01-30)__
+R1-3 is a release based on the master branch.
+
+### Changes since R1-2-1
+
+#### New features
+* Various commits: [Mark Rivers](https://github.com/MarkRivers) added support for Newport CONEX-AGAP controllers
+
+#### Modifications to existing features
+* Pull request [#23](https://github.com/epics-motor/motorNewport/pull/23): [Paul Kienzle](https://github.com/pkienzle) modified the ESP-300 driver to handle non-ESP motors without encoders
+* Pull request [#28](https://github.com/epics-motor/motorNewport/pull/28): [Torsten Bögershausen](https://github.com/tboegi) added support for HXP-D to the hexapod driver and improved the parsing of the group status
+
+#### Bug fixes
+* Various commits: [Mark Rivers](https://github.com/MarkRivers) fixed minor bugs on XPS position compare screens
+* Pull request [#30](https://github.com/epics-motor/motorNewport/pull/30): Fixed a CAPS_LOCK typo in XPSPositionCompare_settings.req
+* Pull request [#32](https://github.com/epics-motor/motorNewport/pull/32): Fixed XPSGathering2 and testSFTPUpload failing to cross compile for linux-arm
+* Pull request [#24](https://github.com/epics-motor/motorNewport/pull/24): [Torsten Bögershausen](https://github.com/tboegi) added calc to the example IOC
+* Pull request [#34](https://github.com/epics-motor/motorNewport/pull/34): Conditionally include optional support in the exmaple IOC
+
+#### Documentation
+* None
+
+#### Continuous integration
+* Upgraded ci-scripts (v3.4.1)
+* Pull request [#25](https://github.com/epics-motor/motorNewport/pull/25): [Torsten Bögershausen](https://github.com/tboegi) updated github actions to use upload-artifact@v4
+
 ## __R1-2-1 (2023-05-15)__
 R1-2-1 is a release based on the master branch.
 
