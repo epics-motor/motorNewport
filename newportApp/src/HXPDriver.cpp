@@ -22,6 +22,9 @@ Note: This driver was tested with the v1.3.x of the firmware
 #include "asynMotorAxis.h"
 
 #include <epicsExport.h>
+#ifndef ASYN_TRACE_INFO
+#define ASYN_TRACE_INFO 0x0040
+#endif
 #include "hxp_drivers.h"
 #include "HXPDriver.h"
 
@@ -49,13 +52,16 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
                          0, 0)  // Default priority and stack size
 {
   int axis;
-  HXPAxis *pAxis;
   static const char *functionName = "HXPController::HXPController";
 
   axisNames_ = epicsStrDup("XYZUVW");
 
   IPAddress_ = epicsStrDup(IPAddress);
   IPPort_ = IPPort;
+  memset (firmwareVersion_, 0, sizeof(firmwareVersion_));
+  memset(encoderPosition_, 0, sizeof(encoderPosition_));
+  memset(setpointPosition_, 0, sizeof(setpointPosition_));
+  is_firmware_hxpd_ = false;
 
   createParam(HXPMoveCoordSysString,          asynParamInt32,   &HXPMoveCoordSys_);
   createParam(HXPStatusString,                asynParamInt32,   &HXPStatus_);
@@ -103,10 +109,8 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
            driverName, functionName);
   }
   
-  HXPFirmwareVersionGet(pollSocket_, firmwareVersion_);
-
   for (axis=0; axis<NUM_AXES; axis++) {
-    pAxis = new HXPAxis(this, axis);
+    new HXPAxis(this, axis);
   }
 
   startPoller(movingPollPeriod, idlePollPeriod, 2);
@@ -125,9 +129,7 @@ HXPController::HXPController(const char *portName, const char *IPAddress, int IP
 extern "C" int HXPCreateController(const char *portName, const char *IPAddress, int IPPort,
                                    int movingPollPeriod, int idlePollPeriod)
 {
-  HXPController *pHXPController
-    = new HXPController(portName, IPAddress, IPPort, movingPollPeriod/1000., idlePollPeriod/1000.);
-  pHXPController = NULL;
+  new HXPController(portName, IPAddress, IPPort, movingPollPeriod/1000., idlePollPeriod/1000.);
   return(asynSuccess);
 }
 
@@ -372,10 +374,44 @@ void HXPController::postError(HXPAxis *pAxis, int status)
   * \param[out] moving A flag that is set indicating that the axis is moving (true) or done (false). */
 asynStatus HXPController::poll()
 { 
-  int status;
+  int status = 1;
+  int polled_motorStatusProblem = 0;
+  int polled_motorStatusPowerOn = 0;
+  int polled_motorStatusHomed = 0;
   //char readResponse[25];
 
   static const char *functionName = "HXPController::poll";
+
+  if (!firmwareVersion_[0]) {
+    status = HXPFirmwareVersionGet(pollSocket_, firmwareVersion_);
+    if (!status) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_INFO,
+                "%s:%s: [%s]: HXPFirmwareVersionGet='%s' pollSocket=%d\n",
+                driverName, functionName, portName, firmwareVersion_, pollSocket_);
+      if (!strstr(firmwareVersion_, "HXP")) {
+        /* crap from socket ? */
+        memset(firmwareVersion_, 0, sizeof(firmwareVersion_));
+      } else {
+        if (strstr(firmwareVersion_, "HXP-D ")) {
+          is_firmware_hxpd_ = true;
+          HXPSetHexapodForFirmwareXPS_D(is_firmware_hxpd_);
+        } else {
+          is_firmware_hxpd_ = false;
+          HXPSetHexapodForFirmwareXPS_D(is_firmware_hxpd_);
+        }
+      }
+    } else {
+      memset(firmwareVersion_, 0, sizeof(firmwareVersion_));
+      status = 1;
+    }
+    if (status) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                "%s:%s: [%s]: error calling HXPFirmwareVersionGet status=%d; pollSocket=%d\n",
+                driverName, functionName, portName, status, pollSocket_);
+      goto done;
+    }
+
+  }
 
   status = HXPGroupStatusGet(pollSocket_, 
                           GROUP, 
@@ -393,41 +429,64 @@ asynStatus HXPController::poll()
   /* Set the status */
   setIntegerParam(HXPStatus_, groupStatus_);
 
-  /* If the group is not moving then the axis is not moving */
-  if ((groupStatus_ < 43) || (groupStatus_ > 48))
-    moving_ = false;
-  else
-    moving_ = true;
-
-  /* Set the motor done parameter */
-  setIntegerParam(motorStatusDone_, moving_?0:1);
-
-  /*Test for states that mean we cannot move an axis (disabled, uninitialised, etc.) 
-    and set problem bit in MSTA.*/
-  if ((groupStatus_ < 10) || ((groupStatus_ >= 20) && (groupStatus_ <= 42)) ||
-      (groupStatus_ == 50) || (groupStatus_ == 64)) 
-  {
-    /* Don't consider a normal disabled status to be a problem */
-    if ( groupStatus_==20 ) 
-    {
-      setIntegerParam(motorStatusProblem_, 0);             
+  if (is_firmware_hxpd_) {
+    /* try a different kind of logic */
+    polled_motorStatusPowerOn = 1; /* power is always on, I think */
+    moving_ = false; /* until we find out otherwise */
+    if (groupStatus_ < 10) {
+      polled_motorStatusProblem = 1;
+    } else if (groupStatus_ < 20) {
+      ; /* polled_motorStatusProblem = 0; done above */
+      polled_motorStatusHomed = 1;
+    } else if (groupStatus_ < 40) {
+      /* polled_motorStatusProblem = 0; done above */
+      polled_motorStatusPowerOn = 0;  /* all good, DISABLE */
+      polled_motorStatusHomed = 1;
+    } else if (groupStatus_ <= 41) {
+      polled_motorStatusProblem = 1; /* 40=Emergency breaking.
+                                        41 = Motor init; */
+    } else if (groupStatus_ == 42) {
+      polled_motorStatusProblem = 1; /* 42 = notref */
+    } else if (groupStatus_ == 43) {
+      moving_ = true;                /* 43 = homing */
+    } else if (groupStatus_ <= 48) {
+      moving_ = true;                /* 44 = moving */
+      polled_motorStatusHomed = 1;
+    } else {
+      polled_motorStatusProblem = 1; /* 49 = encoder calib */
+      /* assume problem */
     }
-    else 
+  } else {
+    /* If the group is not moving then the axis is not moving */
+    if ((groupStatus_ < 43) || (groupStatus_ > 48))
+      moving_ = false;
+    else
+      moving_ = true;
+    /*Test for states that mean we cannot move an axis (disabled, uninitialised, etc.)
+      and set problem bit in MSTA.*/
+    if ((groupStatus_ < 10) || ((groupStatus_ >= 20) && (groupStatus_ <= 42)) ||
+        (groupStatus_ == 50) || (groupStatus_ == 64))
     {
-      asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-          "%s:%s: [%s]: in unintialised/disabled/not referenced. XPS State Code: %d\n",
-          driverName, functionName, portName, groupStatus_);
-      setIntegerParam(motorStatusProblem_, 1);
+        /* Don't consider a normal disabled status to be a problem */
+      if ( groupStatus_==20 )
+      {
+        polled_motorStatusProblem = 0;
+      }
+      else
+      {
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                  "%s:%s: [%s]: in unintialised/disabled/not referenced. XPS State Code: %d\n",
+                  driverName, functionName, portName, groupStatus_);
+        polled_motorStatusProblem = 1;
+      }
     }
-    
-    /* Group status indicates power is off */
-    setIntegerParam(motorStatusPowerOn_, 0);
+    else
+    {
+      polled_motorStatusProblem = 0;
+      polled_motorStatusPowerOn = 1;
+    }
   }
-  else 
-  {
-    setIntegerParam(motorStatusProblem_, 0);
-    setIntegerParam(motorStatusPowerOn_, 1);
-  }
+
 
   status = HXPGroupPositionCurrentGet(pollSocket_,
                                    GROUP,
@@ -452,7 +511,28 @@ asynStatus HXPController::poll()
   }
 
   done:
-  setIntegerParam(motorStatusProblem_, status ? 1:0);
+  {
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s:%s: [%s]: status=%d HXPD=%d homed=%d problem=%d groupStatus=%d\n",
+              driverName, functionName, portName,
+              status, is_firmware_hxpd_,
+              polled_motorStatusHomed, polled_motorStatusProblem,
+              groupStatus_);
+
+    for (int axisNo=0; axisNo<NUM_AXES; axisNo++) {
+      HXPAxis* pAxis = getAxis(axisNo);
+      if (pAxis) {
+        /* !! is short for status ? 1 : 0 */
+        pAxis->setIntegerParam(motorStatusProblem_,
+                               (status || polled_motorStatusProblem)? 1:0);
+        pAxis->setIntegerParam(motorStatusCommsError_, !!status);
+        pAxis->setIntegerParam(motorStatusDone_, moving_?0:1);
+        pAxis->setIntegerParam(motorStatusPowerOn_, polled_motorStatusPowerOn);
+        pAxis->setIntegerParam(motorStatusHomed_, polled_motorStatusHomed);
+      }
+    }
+  }
+  if (status) firmwareVersion_[0] = 0;
   callParamCallbacks();
   return status ? asynError : asynSuccess;
 }
@@ -471,7 +551,9 @@ HXPAxis::HXPAxis(HXPController *pC, int axisNo)
     pC_(pC)
 {  
   axisName_ = pC_->axisNames_[axisNo];
-  sprintf(positionerName_, "%s.%c", GROUP, (char) axisName_);
+  memset(positionerName_, 0, sizeof(positionerName_));
+  snprintf(positionerName_, sizeof(positionerName_) -1,
+           "%s.%c", GROUP, (char) axisName_);
 
   // Couldn't a negative timeout be used here instead?
   moveSocket_ = HXPTCP_ConnectToServer(pC_->IPAddress_, pC->IPPort_, HXP_POLL_TIMEOUT);
@@ -622,11 +704,9 @@ asynStatus HXPAxis::home(double baseVelocity, double slewVelocity, double accele
 
 asynStatus HXPAxis::stop(double acceleration )
 {
-  int status;
   //static const char *functionName = "HXPAxis::stop";
 
-  status = HXPGroupMoveAbort(moveSocket_, GROUP);
-
+  (void)HXPGroupMoveAbort(moveSocket_, GROUP);
   return asynSuccess;
 }
 
@@ -670,17 +750,14 @@ asynStatus HXPAxis::setClosedLoop(bool closedLoop)
   * \param[out] moving A flag that is set indicating that the axis is moving (true) or done (false). */
 asynStatus HXPAxis::poll(bool *moving)
 { 
-  int status;
   //char readResponse[25];
 
-  static const char *functionName = "HXPAxis::poll";
+  //static const char *functionName = "HXPAxis::poll";
 
   /* If the group is not moving then the axis is not moving */
   moving_ = pC_->moving_;
 
-  /* Set the axis done parameter */
   *moving = moving_;
-  setIntegerParam(pC_->motorStatusDone_, *moving?0:1);
 
   encoderPosition_ = pC_->encoderPosition_[axisNo_];
   setpointPosition_ = pC_->setpointPosition_[axisNo_];
