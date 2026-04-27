@@ -160,6 +160,8 @@ DLL int __stdcall PositionerMotionDoneSet (int SocketIndex, char * PositionerNam
 DLL int __stdcall PositionerPositionCompareAquadBAlwaysEnable (int SocketIndex, char * PositionerName);  /* Enable AquadB signal in always mode */
 DLL int __stdcall PositionerPositionCompareAquadBWindowedGet (int SocketIndex, char * PositionerName, double * MinimumPosition, double * MaximumPosition, bool * EnableState);  /* Read position compare AquadB windowed parameters */
 DLL int __stdcall PositionerPositionCompareAquadBWindowedSet (int SocketIndex, char * PositionerName, double MinimumPosition, double MaximumPosition);  /* Set position compare AquadB windowed parameters */
+DLL int __stdcall PositionerPositionCompareAquadBPrescalerGet (int SocketIndex, char * PositionerName, double * PCOInterpolationFactor); /* Gets PCO AquadB interpolation factor */
+DLL int __stdcall PositionerPositionCompareAquadBPrescalerSet (int SocketIndex, char * PositionerName, double PCOInterpolationFactor);  /* Sets PCO AquadB interpolation factor */
 DLL int __stdcall PositionerPositionCompareGet (int SocketIndex, char * PositionerName, double * MinimumPosition, double * MaximumPosition, double * PositionStep, bool * EnableState);  /* Read position compare parameters */
 DLL int __stdcall PositionerPositionCompareSet (int SocketIndex, char * PositionerName, double MinimumPosition, double MaximumPosition, double PositionStep);  /* Set position compare parameters */
 DLL int __stdcall PositionerPositionCompareEnable (int SocketIndex, char * PositionerName);  /* Enable position compare */

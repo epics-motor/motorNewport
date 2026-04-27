@@ -940,7 +940,7 @@ double XPSAxis::XPSStepToMotorRecStep(double XPSStep)
 asynStatus XPSAxis::setPositionCompare()
 {
   int mode;
-  double minPosition, maxPosition, stepSize, pulseWidth, settlingTime;
+  double minPosition, maxPosition, interFactor, stepSize, pulseWidth, settlingTime;
   int itemp;
   int direction;
   int status;
@@ -954,6 +954,8 @@ asynStatus XPSAxis::setPositionCompare()
   pulseWidth = positionComparePulseWidths[itemp];
   pC_->getIntegerParam(axisNo_, pC_->XPSPositionCompareSettlingTime_, &itemp);
   settlingTime = positionCompareSettlingTimes[itemp];
+  pC_->getIntegerParam (axisNo_, pC_->XPSPositionCompareInterFactor_,  &itemp);
+  interFactor = positionCompareInterFactor[itemp];
   
   // minPosition and maxPosition are in motor record units. Convert to XPS units
   minPosition = motorRecPositionToXPSPosition(minPosition);
@@ -1033,8 +1035,26 @@ asynStatus XPSAxis::setPositionCompare()
         return asynError;
       }
       break;
+
+    case XPSPositionCompareModeAquadBPrescaler:
+      status = PositionerPositionCompareAquadBPrescalerSet(pollSocket_, positionerName_, interFactor);
+      if (status) {
+        asynPrint(pasynUser_, ASYN_TRACE_ERROR,
+                  "%s:%s: [%s,%d]: error calling PositionerPositionCompareAquadBPrescalerSet"
+                  " status=%d, interFactor=%f\n",
+                   driverName, functionName, pC_->portName, axisNo_, status, interFactor);
+        return asynError;
+      }
+      status = PositionerPositionCompareAquadBAlwaysEnable(pollSocket_, positionerName_);
+      if (status) {
+        asynPrint(pasynUser_, ASYN_TRACE_ERROR,
+                  "%s:%s: [%s,%d]: error calling PositionerPositionCompareAquadBAlwaysEnable status=%d\n",
+                   driverName, functionName, pC_->portName, axisNo_, status);
+        return asynError;
+      }
+      break;
   } 
-  
+   
   asynPrint(pasynUser_, ASYN_TRACE_FLOW,
             "%s:%s: set XPS %s, axis %d positionCompare set and enable\n",
              driverName, functionName, pC_->portName, axisNo_);
@@ -1048,7 +1068,7 @@ asynStatus XPSAxis::getPositionCompare()
   int status;
   int i;
   int direction;
-  double minPosition=0, maxPosition=0, stepSize=0, pulseWidth, settlingTime;
+  double minPosition=0, maxPosition=0, stepSize=0, interFactor, pulseWidth, settlingTime;
   static const char *functionName = "getPositionCompare";
   
   pC_->getIntegerParam(axisNo_, pC_->motorRecDirection_, &direction);
@@ -1057,6 +1077,13 @@ asynStatus XPSAxis::getPositionCompare()
   if (status) {
     asynPrint(pasynUser_, ASYN_TRACE_ERROR,
               "%s:%s: [%s,%d]: error calling PositionerPositionComparePulseParametersGet status=%d\n",
+               driverName, functionName, pC_->portName, axisNo_, status);
+    return asynError;
+  }
+  status = PositionerPositionCompareAquadBPrescalerGet(pollSocket_, positionerName_, &interFactor);
+  if (status) {
+    asynPrint(pasynUser_, ASYN_TRACE_ERROR,
+              "%s:%s: [%s,%d]: error calling PositionerPositionCompareAquadBPrescalerGet status=%d\n",
                driverName, functionName, pC_->portName, axisNo_, status);
     return asynError;
   }
@@ -1082,12 +1109,12 @@ asynStatus XPSAxis::getPositionCompare()
     }
 //    setDoubleParam(pC_->XPSPositionCompareMinPosition_,  XPSPositionToMotorRecPosition(minPosition));
 //    setDoubleParam(pC_->XPSPositionCompareMaxPosition_,  XPSPositionToMotorRecPosition(maxPosition));
-  } 
+  }
   asynPrint(pasynUser_, ASYN_TRACE_FLOW,
             "%s:%s: set XPS %s, axis %d "
-            " enable=%d, minPosition=%f, maxPosition=%f, stepSize=%f, pulseWidth=%f, settlingTime=%f\n",
+            " enable=%d, minPosition=%f, maxPosition=%f, stepSize=%f, interFactor=%f, pulseWidth=%f, settlingTime=%f\n",
              driverName, functionName, pC_->portName, axisNo_,
-             enable, minPosition, maxPosition, stepSize, pulseWidth, settlingTime);
+             enable, minPosition, maxPosition, stepSize, interFactor, pulseWidth, settlingTime);
 
   for (i=0; i<MAX_PULSE_WIDTHS; i++) {
     if (fabs(pulseWidth - positionComparePulseWidths[i]) < 0.001) break;
@@ -1097,6 +1124,10 @@ asynStatus XPSAxis::getPositionCompare()
     if (fabs(settlingTime - positionCompareSettlingTimes[i]) < 0.001) break;
   }
   setIntegerParam(pC_->XPSPositionCompareSettlingTime_,  i);
+  for (i=0; i<MAX_INTER_FACTOR; i++) {
+    if (fabs(interFactor - positionCompareInterFactor[i]) < 0.001) break;
+  }
+  setIntegerParam(pC_->XPSPositionCompareInterFactor_,  i);
   return asynSuccess;
 }
 

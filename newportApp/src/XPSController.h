@@ -25,13 +25,16 @@ USAGE...        Newport XPS EPICS asyn motor device driver
 
 #define MAX_PULSE_WIDTHS 4
 #define MAX_SETTLING_TIMES 4
+#define MAX_INTER_FACTOR 5
 static const double positionComparePulseWidths[MAX_PULSE_WIDTHS]     = {0.2,   1.0, 2.5, 10.0};
 static const double positionCompareSettlingTimes[MAX_SETTLING_TIMES] = {0.075, 1.0, 4.0, 12.0};
+static const double positionCompareInterFactor[MAX_INTER_FACTOR] = {4, 16, 256, 4096, 65536};
 typedef enum {
   XPSPositionCompareModeDisable,
   XPSPositionCompareModePulse,
   XPSPositionCompareModeAquadBWindowed,
-  XPSPositionCompareModeAquadBAlways
+  XPSPositionCompareModeAquadBAlways,
+  XPSPositionCompareModeAquadBPrescaler
 } XPSPositionCompareMode_t;
   
 // drvInfo strings for extra parameters that the XPS controller supports
@@ -41,6 +44,7 @@ typedef enum {
 #define XPSPositionCompareMinPositionString   "XPS_POSITION_COMPARE_MIN_POSITION"
 #define XPSPositionCompareMaxPositionString   "XPS_POSITION_COMPARE_MAX_POSITION"
 #define XPSPositionCompareStepSizeString      "XPS_POSITION_COMPARE_STEP_SIZE"
+#define XPSPositionCompareInterFactorString   "XPS_POSITION_COMPARE_INTER_FACTOR"
 #define XPSPositionComparePulseWidthString    "XPS_POSITION_COMPARE_PULSE_WIDTH"
 #define XPSPositionCompareSettlingTimeString  "XPS_POSITION_COMPARE_SETTLING_TIME"
 #define XPSProfileMaxVelocityString           "XPS_PROFILE_MAX_VELOCITY"
@@ -105,6 +109,7 @@ class epicsShareClass XPSController : public asynMotorController {
   int XPSPositionCompareMinPosition_;
   int XPSPositionCompareMaxPosition_;
   int XPSPositionCompareStepSize_;
+  int XPSPositionCompareInterFactor_;
   int XPSPositionComparePulseWidth_;
   int XPSPositionCompareSettlingTime_;
   int XPSProfileMaxVelocity_;

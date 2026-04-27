@@ -6193,6 +6193,83 @@ int __stdcall PositionerPositionCompareAquadBWindowedSet (int SocketIndex, char 
 
 
 /*********************************************************************** 
+ * PositionerPositionCompareAquadBPrescalerGet :  Gets PCO AquadB interpolation factor
+ *
+ *     - Parameters :
+ *            int SocketIndex
+ *            char *PositionerName
+ *            double *PCOInterpolationFactor
+ *     - Return :
+ *            int errorCode
+ ***********************************************************************/ 
+int __stdcall PositionerPositionCompareAquadBPrescalerGet (int SocketIndex, char * PositionerName, double * PCOInterpolationFactor) 
+{ 
+	int ret = -1; 
+	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
+	char *ReturnedValue = (char *) malloc (sizeof(char) * SIZE_SMALL); 
+
+	/* Convert to string */ 
+	sprintf (ExecuteMethod, "PositionerPositionCompareAquadBPrescalerGet (%s,double *)", PositionerName);
+
+	/* Send this string and wait return function from controller */ 
+	/* return function : ==0 -> OK ; < 0 -> NOK */ 
+	SendAndReceive (SocketIndex, ExecuteMethod, ReturnedValue, SIZE_SMALL); 
+	if (strlen (ReturnedValue) > 0) 
+		sscanf (ReturnedValue, "%i", &ret); 
+
+	/* Get the returned values in the out parameters */ 
+	if (ret == 0) 
+	{ 
+		char * pt;
+		char * ptNext;
+
+		pt = ReturnedValue;
+		ptNext = NULL;
+		if (pt != NULL) pt = strchr (pt, ',');
+		if (pt != NULL) pt++;
+		if (pt != NULL) sscanf (pt, "%lf", PCOInterpolationFactor);
+	} 
+	if (NULL != ReturnedValue)
+		free (ReturnedValue);
+
+	return (ret); 
+}
+
+
+/*********************************************************************** 
+ * PositionerPositionCompareAquadBPrescalerSet :  /* Sets PCO AquadB interpolation factor
+ *
+ *     - Parameters :
+ *            int SocketIndex
+ *            char *PositionerName
+ *            double PCOInterpolationFactor
+ *     - Return :
+ *            int errorCode
+ ***********************************************************************/ 
+int __stdcall PositionerPositionCompareAquadBPrescalerSet (int SocketIndex, char * PositionerName, double PCOInterpolationFactor)
+{ 
+	int ret = -1; 
+	char ExecuteMethod[SIZE_EXECUTE_METHOD]; 
+	char *ReturnedValue = (char *) malloc (sizeof(char) * SIZE_SMALL); 
+
+	/* Convert to string */ 
+	sprintf (ExecuteMethod, "PositionerPositionCompareAquadBPrescalerSet (%s,%.13g)", PositionerName, PCOInterpolationFactor);
+
+	/* Send this string and wait return function from controller */ 
+	/* return function : ==0 -> OK ; < 0 -> NOK */ 
+	SendAndReceive (SocketIndex, ExecuteMethod, ReturnedValue, SIZE_SMALL); 
+	if (strlen (ReturnedValue) > 0) 
+		sscanf (ReturnedValue, "%i", &ret); 
+
+	/* Get the returned values in the out parameters */ 
+	if (NULL != ReturnedValue)
+		free (ReturnedValue);
+
+	return (ret); 
+}
+
+
+/*********************************************************************** 
  * PositionerPositionCompareGet :  Read position compare parameters
  *
  *     - Parameters :

@@ -162,6 +162,7 @@ XPSController::XPSController(const char *portName, const char *IPAddress, int IP
   createParam(XPSPositionCompareMinPositionString,    asynParamFloat64, &XPSPositionCompareMinPosition_);
   createParam(XPSPositionCompareMaxPositionString,    asynParamFloat64, &XPSPositionCompareMaxPosition_);
   createParam(XPSPositionCompareStepSizeString,       asynParamFloat64, &XPSPositionCompareStepSize_);
+  createParam(XPSPositionCompareInterFactorString,    asynParamInt32,   &XPSPositionCompareInterFactor_);
   createParam(XPSPositionComparePulseWidthString,     asynParamInt32,   &XPSPositionComparePulseWidth_);
   createParam(XPSPositionCompareSettlingTimeString,   asynParamInt32,   &XPSPositionCompareSettlingTime_);
   createParam(XPSProfileMaxVelocityString,            asynParamFloat64, &XPSProfileMaxVelocity_);
@@ -282,7 +283,7 @@ asynStatus XPSController::writeInt32(asynUser *pasynUser, epicsInt32 value)
       status = asynError;
     }
 
-  } else if ((function == XPSPositionCompareMode_) ||
+  } else if ((function == XPSPositionCompareMode_)       ||
              (function == XPSPositionComparePulseWidth_) ||
              (function == XPSPositionCompareStepSize_)) {
     status = pAxis->setPositionCompare();
