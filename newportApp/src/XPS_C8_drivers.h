@@ -19,7 +19,11 @@
 extern "C"
 {
 #else
-typedef int bool;  /* C does not know bool, only C++ */
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#include <stdbool.h>
+#else
+typedef int bool;  /* Compatibility with pre-C99 compilers. */
+#endif
 #endif
 
 

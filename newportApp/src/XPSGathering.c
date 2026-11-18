@@ -21,7 +21,7 @@
 #define GATHERING_DIRECTORY "/Admin/public/"
 #define GATHERING_FILE "Gathering.dat"
 
-epicsShareFunc void xps_gathering()
+epicsShareFunc void xps_gathering(void)
 {
     int status,poll_socket,drive_socket,end=0;
     SOCKET ftpSocket;
